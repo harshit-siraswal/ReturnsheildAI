@@ -87,6 +87,10 @@ function AppShell() {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setFirebaseUser(user)
       setAuthLoading(false)
+      // Auto-advance to dashboard whenever Firebase confirms a logged-in user
+      if (user) {
+        setShowDashboard(true)
+      }
     })
     return unsubscribe
   }, [])
@@ -296,6 +300,7 @@ function AppShell() {
       <Login
         onLogin={() => {
           pushToast({ title: 'Welcome back', body: `Signed in as ${auth.currentUser?.email || 'user'}.`, tone: 'success' })
+          setShowDashboard(true)
         }}
       />
     )

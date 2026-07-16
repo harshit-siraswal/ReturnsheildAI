@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Menu, X, ChevronDown, ChevronRight } from 'lucide-react';
+import { Menu, X, ChevronRight } from 'lucide-react';
+
 
 interface NavbarProps {
   onLoginClick?: () => void;
@@ -46,10 +47,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onLoginClick }) => {
           </a>
           <a href="#features" className="landing-link">Features</a>
           <a href="#about" className="landing-link">How it works</a>
-          <a href="#pricing" className="landing-link pages-link">
-            Pricing
-            <ChevronDown size={12} strokeWidth={3.5} />
-          </a>
         </div>
 
         {/* Right cluster */}
@@ -87,11 +84,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onLoginClick }) => {
             </a>
             <a href="#features" onClick={() => setIsOpen(false)} className="landing-mobile-link">Features</a>
             <a href="#about" onClick={() => setIsOpen(false)} className="landing-mobile-link">How it works</a>
-            <a href="#pricing" onClick={() => setIsOpen(false)} className="landing-mobile-link"
-               style={{ color: 'var(--convix-orange)', fontWeight: 600 }}>
-              Pricing
-              <ChevronDown size={14} strokeWidth={3.5} />
-            </a>
             <button
               type="button"
               onClick={() => { setIsOpen(false); onLoginClick?.(); }}
