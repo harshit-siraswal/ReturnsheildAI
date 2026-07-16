@@ -14,6 +14,13 @@
   --amber: #f5a623;
   --red: #ee0000;
   --blue: #0070f3;
+  --button-primary-bg: #00dfd8;
+  --button-primary-fg: #000000;
+  --button-primary-hover-bg: #b2f6ef;
+  --button-secondary-bg: rgba(255, 255, 255, 0.02);
+  --button-secondary-border: rgba(255, 255, 255, 0.06);
+  --button-secondary-fg: #c0cfdd;
+  --button-secondary-hover-bg: rgba(255, 255, 255, 0.06);
   --curve: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
@@ -33,6 +40,13 @@
   --amber: #d97706;
   --red: #dc2626;
   --blue: #2563eb;
+  --button-primary-bg: #006666;
+  --button-primary-fg: #ffffff;
+  --button-primary-hover-bg: #004d4d;
+  --button-secondary-bg: #f5f7f9;
+  --button-secondary-border: #dfe6ee;
+  --button-secondary-fg: #334155;
+  --button-secondary-hover-bg: #edf2f7;
 }
 
 .app-shell {
@@ -1190,9 +1204,9 @@
 
 /* AI Explanation Component */
 .ai-assess-btn {
-  border: 1px solid rgba(105, 222, 213, 0.25);
-  background: rgba(105, 222, 213, 0.05);
-  color: var(--teal);
+  border: 1px solid var(--button-secondary-border);
+  background: var(--button-secondary-bg);
+  color: var(--button-secondary-fg);
   font-size: 9px;
   font-weight: 550;
   padding: 3px 8px;
@@ -1202,8 +1216,8 @@
 }
 
 .ai-assess-btn:hover {
-  background: rgba(105, 222, 213, 0.12);
-  border-color: rgba(105, 222, 213, 0.45);
+  background: var(--button-secondary-hover-bg);
+  border-color: var(--line-strong);
 }
 
 .ai-explanation-box, .ai-explanation-placeholder {
@@ -1559,11 +1573,11 @@ td small {
   align-items: center;
   justify-content: center;
   gap: 7px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--button-secondary-border);
   border-radius: 10px;
   padding: 8px 14px;
-  background: rgba(255, 255, 255, 0.02);
-  color: #c0cfdd;
+  background: var(--button-secondary-bg);
+  color: var(--button-secondary-fg);
   font-size: 11px;
   font-weight: 520;
   cursor: pointer;
@@ -1571,8 +1585,8 @@ td small {
 }
 
 .drawer-chip:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.15);
+  background: var(--button-secondary-hover-bg);
+  border-color: var(--line-strong);
   color: var(--ink);
   transform: translateY(-1px);
 }
@@ -1784,14 +1798,14 @@ td small {
   place-items: center;
   border-radius: 12px;
   border: 0;
-  background: var(--teal);
-  color: #06221f;
+  background: var(--button-primary-bg);
+  color: var(--button-primary-fg);
   cursor: pointer;
   transition: all 200ms var(--curve);
 }
 
 .copilot-form button:hover:not(:disabled) {
-  background: #b2f6ef;
+  background: var(--button-primary-hover-bg);
   transform: translateY(-1px);
 }
 
@@ -1928,10 +1942,10 @@ td small {
   gap: 10px;
   width: 100%;
   padding: 10px 14px;
-  background: var(--surface-raised);
-  border: 1px solid var(--line);
+  background: var(--button-secondary-bg);
+  border: 1px solid var(--button-secondary-border);
   border-radius: 8px;
-  color: var(--ink);
+  color: var(--button-secondary-fg);
   font-size: 13.5px !important;
   font-weight: 550;
   cursor: pointer;
@@ -1940,7 +1954,7 @@ td small {
 
 .google-button:hover:not(:disabled) {
   border-color: var(--line-strong);
-  background: var(--surface);
+  background: var(--button-secondary-hover-bg);
   transform: translateY(-1px);
 }
 
@@ -1951,6 +1965,58 @@ td small {
 .google-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+:root.theme-light .review-button,
+:root.theme-light .apply-button,
+:root.theme-light .drawer-chip,
+:root.theme-light .copilot-form button,
+:root.theme-light .landing-access-btn,
+:root.theme-light .landing-mobile-cta,
+:root.theme-light .banner-btn,
+:root.theme-light .landing-cta-btn {
+  color: var(--button-primary-fg);
+  background: var(--button-primary-bg);
+}
+
+:root.theme-light .review-button:hover,
+:root.theme-light .apply-button:hover,
+:root.theme-light .copilot-form button:hover:not(:disabled),
+:root.theme-light .landing-access-btn:hover,
+:root.theme-light .landing-mobile-cta:hover,
+:root.theme-light .banner-btn:hover,
+:root.theme-light .landing-cta-btn:hover {
+  background: var(--button-primary-hover-bg);
+}
+
+:root.theme-light .review-button span,
+:root.theme-light .apply-button span {
+  color: var(--button-primary-bg);
+  background: var(--button-primary-fg);
+}
+
+:root.theme-light .drawer-chip,
+:root.theme-light .ai-assess-btn,
+:root.theme-light .google-button,
+:root.theme-light .date-button,
+:root.theme-light .export-button,
+:root.theme-light .quiet-button,
+:root.theme-light .filter-button {
+  background: var(--button-secondary-bg);
+  border-color: var(--button-secondary-border);
+  color: var(--button-secondary-fg);
+}
+
+:root.theme-light .drawer-chip:hover:not(:disabled),
+:root.theme-light .ai-assess-btn:hover,
+:root.theme-light .google-button:hover:not(:disabled),
+:root.theme-light .date-button:hover,
+:root.theme-light .export-button:hover,
+:root.theme-light .quiet-button:hover,
+:root.theme-light .filter-button:hover {
+  background: var(--button-secondary-hover-bg);
+  border-color: var(--line-strong);
+  color: var(--ink);
 }
 
 

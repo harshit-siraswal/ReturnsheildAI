@@ -205,8 +205,8 @@
 }
 
 .landing-access-btn {
-  background: var(--convix-orange);
-  color: #ffffff;
+  background: var(--button-primary-bg);
+  color: var(--button-primary-fg);
   border-radius: 9999px;
   border: none;
   padding: 6px 6px 6px 18px;
@@ -221,7 +221,7 @@
 }
 
 .landing-access-btn:hover {
-  background: #d83c16;
+  background: var(--button-primary-hover-bg);
 }
 
 .landing-access-btn:active {
@@ -366,33 +366,35 @@
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  background: var(--convix-dark);
-  color: #ffffff;
+  background: linear-gradient(180deg, var(--button-primary-bg) 0%, var(--button-primary-hover-bg) 100%);
+  color: var(--button-primary-fg);
   border-radius: 9999px;
-  padding: 8px 8px 8px 24px;
+  padding: 10px 10px 10px 26px;
   font-size: 14px;
   font-weight: 600;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.18);
   cursor: pointer;
-  transition: background 200ms ease, transform 200ms ease, box-shadow 200ms ease;
-  box-shadow: 0 4px 10px rgba(11, 15, 26, 0.15);
+  transition: transform 200ms ease, box-shadow 200ms ease, filter 200ms ease;
+  box-shadow: 0 14px 28px rgba(239, 77, 35, 0.28), 0 6px 14px rgba(11, 15, 26, 0.16);
+  position: relative;
+  z-index: 3;
 }
 
 .landing-cta-btn:hover {
-  background: #1c263d;
-  transform: translateY(-1.5px);
-  box-shadow: 0 6px 15px rgba(11, 15, 26, 0.25);
+  transform: translateY(-2px) scale(1.01);
+  filter: saturate(1.05) brightness(1.03);
+  box-shadow: 0 18px 34px rgba(239, 77, 35, 0.34), 0 8px 18px rgba(11, 15, 26, 0.18);
 }
 
 .landing-cta-btn:active {
-  transform: scale(0.98);
+  transform: translateY(0) scale(0.99);
 }
 
 .landing-cta-icon {
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.18);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -978,8 +980,8 @@
 }
 
 .banner-btn {
-  background: var(--convix-orange);
-  color: #ffffff;
+  background: var(--button-primary-bg);
+  color: var(--button-primary-fg);
   border: none;
   border-radius: 9999px;
   font-size: 13px;
@@ -993,7 +995,7 @@
 }
 
 .banner-btn:hover {
-  background: #d83c16;
+  background: var(--button-primary-hover-bg);
   transform: translateY(-1px);
 }
 
@@ -1001,8 +1003,8 @@
 .landing-mobile-cta {
   margin-top: 8px;
   width: 100%;
-  background: var(--convix-orange);
-  color: #fff;
+  background: var(--button-primary-bg);
+  color: var(--button-primary-fg);
   border: none;
   border-radius: 10px;
   padding: 12px;
@@ -1012,7 +1014,7 @@
   font-family: var(--convix-font);
   transition: background 200ms ease;
 }
-.landing-mobile-cta:hover { background: #d83c16; }
+.landing-mobile-cta:hover { background: var(--button-primary-hover-bg); }
 
 /* ─── ReturnShield dark dashboard preview shell ──────────── */
 .rs-preview-shell {
