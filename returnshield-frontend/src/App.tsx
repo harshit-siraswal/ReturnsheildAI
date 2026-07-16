@@ -66,6 +66,7 @@ import { auth } from './lib/firebase'
 type PriorityFilter = 'All' | 'P0' | 'P1' | 'P2'
 type PaymentFilter = 'All' | 'COD' | 'UPI' | 'Card'
 type SortMode = 'Expected loss' | 'Risk score' | 'SLA urgency'
+type AppView = 'landing' | 'login' | 'dashboard'
 
 const navHints: Record<string, string> = {
   Overview: 'Portfolio exposure, urgent alerts, and trends',
@@ -81,20 +82,42 @@ function AppShell() {
   const { pushToast } = useToast()
   const [firebaseUser, setFirebaseUser] = useState<any>(null)
   const [authLoading, setAuthLoading] = useState(true)
-  const [showDashboard, setShowDashboard] = useState(false)
+  const getViewFromHash = () => {
+    const hash = window.location.hash.replace(/^#\/?/, '').toLowerCase()
+    if (hash === 'login' || hash === 'dashboard') return hash as AppView
+    return 'landing'
+  }
+  const [view, setView] = useState<AppView>(getViewFromHash)
+
+  const navigateTo = (nextView: AppView) => {
+    if (window.location.hash.replace(/^#\/?/, '').toLowerCase() !== nextView) {
+      window.location.hash = nextView
+    }
+    setView(nextView)
+  }
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setFirebaseUser(user)
       setAuthLoading(false)
-      // If Firebase restores a session on page load, skip the landing page
-      if (user && !showDashboard) {
-        setShowDashboard(true)
-      }
     })
     return unsubscribe
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    const onHashChange = () => {
+      setView(getViewFromHash())
+    }
+
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [])
+
+  useEffect(() => {
+    if (firebaseUser && view === 'login') {
+      navigateTo('dashboard')
+    }
+  }, [firebaseUser, view])
 
   const [activeNav, setActiveNav] = useState('Overview')
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
@@ -273,7 +296,7 @@ function AppShell() {
     } catch (err) {
       console.error('Sign out error:', err)
     }
-    setShowDashboard(false)   // send back to landing
+    navigateTo('landing')
     setActiveNav('Overview')
     setIsDrawerOpen(false)
     setSettingsOpen(false)
@@ -287,25 +310,21 @@ function AppShell() {
     )
   }
 
-  if (!showDashboard) {
+  if (view === 'landing') {
     return (
       <ConvixLandingPage
-        onEnterWorkspace={() => setShowDashboard(true)}
+        onEnterWorkspace={() => navigateTo(firebaseUser ? 'dashboard' : 'login')}
         isAuthenticated={!!firebaseUser}
         userEmail={firebaseUser?.email}
       />
     )
   }
 
-  // showDashboard=true but not yet authenticated → show login
-  // Once Firebase resolves the sign-in, firebaseUser will be set and
-  // this block will no longer match on the next render.
-  if (!firebaseUser) {
+  if ((view === 'login' || view === 'dashboard') && !firebaseUser) {
     return (
       <Login
         onLogin={() => {
-          // onAuthStateChanged will fire immediately after this and set
-          // firebaseUser, triggering the re-render that shows the dashboard.
+          navigateTo('dashboard')
           pushToast({ title: 'Welcome back', body: `Signed in as ${auth.currentUser?.email || 'user'}.`, tone: 'success' })
         }}
       />
