@@ -149,15 +149,15 @@ export function CoPilot({ orders }: CoPilotProps) {
       <div className="copilot-footer">
         {messages.length === 1 && (
           <div className="copilot-suggestions">
-            <small>Common questions:</small>
-            <div className="suggestions-grid">
-              {QUICK_QUESTIONS.map((q) => (
-                <button key={q} type="button" onClick={() => handleSend(q)}>
-                  {q}
-                </button>
-              ))}
+              <small>Try one of these</small>
+              <div className="suggestions-grid">
+                {QUICK_QUESTIONS.map((q) => (
+                  <button key={q} type="button" onClick={() => handleSend(q)}>
+                    {q}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
         )}
 
         <form
