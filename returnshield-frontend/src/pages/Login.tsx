@@ -9,8 +9,14 @@ import {
   ShieldCheck,
   Sparkle,
   User,
+  GoogleLogo,
 } from '@phosphor-icons/react'
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from 'firebase/auth'
 import { auth } from '../lib/firebase'
 import { DEMO_EMAIL, DEMO_PASSWORD } from '../lib/data'
 import { useToast } from '../lib/toast'
@@ -41,6 +47,22 @@ export function Login({ onLogin }: LoginProps) {
   const [error, setError] = useState<string | null>(null)
   const [isSigningIn, setIsSigningIn] = useState(false)
   const { pushToast } = useToast()
+
+  const handleGoogleSubmit = async () => {
+    if (isSigningIn) return
+    setError(null)
+    setIsSigningIn(true)
+    const provider = new GoogleAuthProvider()
+    try {
+      await signInWithPopup(auth, provider)
+      pushToast({ title: 'Welcome', body: 'Logged in with Google.', tone: 'success' })
+      onLogin()
+    } catch (err: any) {
+      console.error('Google Sign-in error:', err)
+      setError(err.message || 'Google Sign-in failed. Please try again.')
+      setIsSigningIn(false)
+    }
+  }
 
   const fillDemo = () => {
     setEmail(DEMO_EMAIL)
@@ -158,6 +180,20 @@ export function Login({ onLogin }: LoginProps) {
               ) : (
                 <>Sign in to workspace <span><ArrowUpRight size={16} weight="light" /></span></>
               )}
+            </button>
+
+            <div className="login-divider">
+              <span>or</span>
+            </div>
+
+            <button
+              className="google-button"
+              type="button"
+              onClick={handleGoogleSubmit}
+              disabled={isSigningIn}
+            >
+              <GoogleLogo size={18} weight="bold" />
+              <span>Continue with Google</span>
             </button>
           </form>
 

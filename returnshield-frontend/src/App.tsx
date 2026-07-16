@@ -91,6 +91,25 @@ function AppShell() {
 
   const [activeNav, setActiveNav] = useState('Overview')
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    return (localStorage.getItem('returnshield-theme') as 'dark' | 'light') || 'dark'
+  })
+
+  useEffect(() => {
+    const root = document.documentElement
+    if (theme === 'light') {
+      root.classList.add('theme-light')
+      root.classList.remove('theme-dark')
+    } else {
+      root.classList.add('theme-dark')
+      root.classList.remove('theme-light')
+    }
+    localStorage.setItem('returnshield-theme', theme)
+  }, [theme])
+
+  const toggleTheme = () => {
+    setTheme((t) => (t === 'dark' ? 'light' : 'dark'))
+  }
   const [aiExplanation, setAiExplanation] = useState<string | null>(null)
   const [aiLoading, setAiLoading] = useState(false)
   const [groqKeyInput, setGroqKeyInput] = useState(() => sessionStorage.getItem('returnshield-groq-api-key') || '')
@@ -441,6 +460,8 @@ function AppShell() {
         orderCount={orders.filter((o) => o.status === 'New' || o.status === 'Assigned').length + 85}
         isCollapsed={isSidebarCollapsed}
         onToggleCollapse={() => setIsSidebarCollapsed((prev) => !prev)}
+        theme={theme}
+        onToggleTheme={toggleTheme}
         navItems={[
           { label: 'Overview', icon: <House size={18} weight="light" />, hint: navHints.Overview },
           { label: 'AI Co-Pilot', icon: <Sparkle size={18} weight="light" />, hint: navHints['AI Co-Pilot'] },

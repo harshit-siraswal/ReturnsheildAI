@@ -1,5 +1,5 @@
 import React from 'react'
-import { CaretDown, CaretLeft, CaretRight, Gear, SignOut } from '@phosphor-icons/react'
+import { CaretDown, CaretLeft, CaretRight, Gear, SignOut, Sun, Moon } from '@phosphor-icons/react'
 
 type NavItem = {
   label: string
@@ -19,6 +19,8 @@ interface SidebarProps {
   orderCount?: number
   isCollapsed?: boolean
   onToggleCollapse?: () => void
+  theme: 'dark' | 'light'
+  onToggleTheme: () => void
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -32,6 +34,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   orderCount = 93,
   isCollapsed = false,
   onToggleCollapse,
+  theme,
+  onToggleTheme,
 }) => {
   const [userMenuOpen, setUserMenuOpen] = React.useState(false)
 
@@ -96,6 +100,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <span className="pulse-dot"></span>
           {!isCollapsed && <span>{orderCount} orders need review</span>}
         </div>
+        <button
+          className="help-link theme-toggle-btn"
+          type="button"
+          onClick={onToggleTheme}
+          title="Toggle light and dark mode"
+        >
+          {theme === 'dark' ? (
+            <Sun size={17} weight="light" aria-hidden="true" />
+          ) : (
+            <Moon size={17} weight="light" aria-hidden="true" />
+          )}
+          {!isCollapsed && <span>{theme === 'dark' ? 'Light mode' : 'Dark mode'}</span>}
+        </button>
         <button
           className="help-link"
           type="button"
