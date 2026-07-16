@@ -983,3 +983,221 @@
   background: #d83c16;
   transform: translateY(-1px);
 }
+
+/* ─── Mobile nav CTA ─────────────────────────────────────── */
+.landing-mobile-cta {
+  margin-top: 8px;
+  width: 100%;
+  background: var(--convix-orange);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--convix-font);
+  transition: background 200ms ease;
+}
+.landing-mobile-cta:hover { background: #d83c16; }
+
+/* ─── ReturnShield dark dashboard preview shell ──────────── */
+.rs-preview-shell {
+  background: #0d1117;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-bottom: none;
+  padding: 16px 16px 0;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  font-family: var(--convix-font);
+  overflow: hidden;
+}
+
+/* Top bar */
+.rs-preview-topbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.rs-preview-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #6b7280;
+}
+.rs-preview-breadcrumb-parent { color: #6b7280; }
+.rs-preview-breadcrumb-sep    { color: #374151; }
+.rs-preview-breadcrumb-current { color: #d1d5db; font-weight: 500; }
+.rs-preview-search {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #161b22;
+  border: 1px solid #21262d;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 10px;
+  color: #9ca3af;
+}
+.rs-preview-bell {
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  background: #161b22; border: 1px solid #21262d; border-radius: 6px;
+  color: #6b7280;
+}
+
+/* Hero text inside preview */
+.rs-preview-hero-text { margin-bottom: 14px; }
+.rs-preview-kicker {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.08em;
+  color: #ef4d23; text-transform: uppercase; margin-bottom: 4px;
+}
+.rs-preview-hero-title {
+  font-size: clamp(18px, 3vw, 26px);
+  font-weight: 700;
+  color: #f9fafb;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+.rs-preview-hero-sub {
+  font-size: 10px;
+  color: #6b7280;
+  line-height: 1.5;
+  max-width: 420px;
+  margin-bottom: 8px;
+}
+.rs-preview-date-btn {
+  background: #161b22; border: 1px solid #21262d; border-radius: 6px;
+  padding: 3px 8px; font-size: 9px; color: #9ca3af; cursor: pointer;
+}
+.rs-preview-export-btn {
+  background: #161b22; border: 1px solid #21262d; border-radius: 6px;
+  padding: 3px 8px; font-size: 9px; color: #9ca3af; cursor: pointer;
+}
+
+/* Metric cards */
+.rs-preview-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+@media (min-width: 640px) {
+  .rs-preview-metrics { grid-template-columns: repeat(4, 1fr); }
+}
+
+.rs-preview-metric-card {
+  background: #161b22;
+  border: 1px solid #21262d;
+  border-radius: 10px;
+  padding: 10px 12px;
+  position: relative;
+  overflow: hidden;
+}
+.rs-preview-metric-label {
+  font-size: 9px; color: #6b7280; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;
+}
+.rs-preview-metric-icon {
+  position: absolute; top: 10px; right: 10px;
+  width: 20px; height: 20px; border-radius: 5px;
+  display: flex; align-items: center; justify-content: center;
+}
+.rs-preview-metric-icon.orange  { background: rgba(239,77,35,0.15); color: #ef4d23; }
+.rs-preview-metric-icon.orange-light { background: rgba(251,146,60,0.15); color: #f97316; }
+.rs-preview-metric-icon.blue    { background: rgba(59,130,246,0.15); color: #3b82f6; }
+.rs-preview-metric-icon.green   { background: rgba(34,197,94,0.15); color: #22c55e; }
+
+.rs-preview-metric-value {
+  font-size: clamp(14px, 2vw, 18px);
+  font-weight: 700;
+  color: #f9fafb;
+  letter-spacing: -0.02em;
+  margin-bottom: 2px;
+}
+.rs-preview-metric-delta {
+  font-size: 9px;
+  line-height: 1.4;
+}
+.rs-preview-metric-delta.red    { color: #f87171; }
+.rs-preview-metric-delta.orange { color: #f97316; }
+.rs-preview-metric-delta.green  { color: #4ade80; }
+
+/* Bottom two panels */
+.rs-preview-panels {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+@media (min-width: 640px) {
+  .rs-preview-panels { grid-template-columns: 3fr 2fr; }
+}
+
+.rs-preview-panel {
+  background: #161b22;
+  border: 1px solid #21262d;
+  border-radius: 10px;
+  padding: 12px;
+}
+.rs-preview-panel-kicker {
+  font-size: 8px; font-weight: 700; letter-spacing: 0.1em;
+  color: #4b5563; text-transform: uppercase; margin-bottom: 2px;
+}
+.rs-preview-panel-title {
+  font-size: 13px; font-weight: 700; color: #f9fafb; letter-spacing: -0.01em;
+}
+.rs-preview-panel-value {
+  font-size: 16px; font-weight: 700; color: #f9fafb; letter-spacing: -0.02em;
+}
+.rs-preview-panel-delta { font-size: 9px; color: #ef4d23; }
+.rs-preview-chart-area { margin-top: 10px; height: 80px; }
+
+/* Live dot */
+.rs-preview-live-dot {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 9px; color: #4ade80; font-weight: 600;
+}
+.rs-preview-live-dot span {
+  width: 6px; height: 6px; border-radius: 50%; background: #4ade80;
+  animation: pulse-green 1.5s ease-in-out infinite;
+}
+@keyframes pulse-green {
+  0%, 100% { opacity: 1; } 50% { opacity: 0.4; }
+}
+
+/* Action items */
+.rs-preview-action-list { display: flex; flex-direction: column; gap: 6px; }
+.rs-preview-action-item {
+  display: flex; align-items: center; gap: 8px;
+  background: #0d1117;
+  border: 1px solid #21262d;
+  border-radius: 8px;
+  padding: 7px 8px;
+  cursor: pointer;
+  transition: border-color 200ms ease;
+}
+.rs-preview-action-item:hover { border-color: #374151; }
+.rs-preview-action-icon {
+  width: 22px; height: 22px; flex-shrink: 0; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+}
+.rs-preview-action-icon.shield { background: rgba(239,77,35,0.15); color: #ef4d23; }
+.rs-preview-action-icon.box    { background: rgba(251,146,60,0.15); color: #f97316; }
+.rs-preview-action-icon.clock  { background: rgba(59,130,246,0.15); color: #3b82f6; }
+.rs-preview-action-body { flex: 1; min-width: 0; }
+.rs-preview-action-title { font-size: 10px; font-weight: 600; color: #e5e7eb; margin-bottom: 1px; }
+.rs-preview-action-sub   { font-size: 9px; color: #6b7280; }
+.rs-preview-action-arrow { font-size: 10px; color: #374151; flex-shrink: 0; }
+.rs-preview-view-all {
+  margin-top: 8px; font-size: 9px; color: #4b5563; cursor: pointer; text-align: right;
+  transition: color 200ms ease;
+}
+.rs-preview-view-all:hover { color: #9ca3af; }
