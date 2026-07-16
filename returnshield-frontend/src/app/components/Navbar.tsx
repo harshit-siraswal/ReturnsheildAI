@@ -31,22 +31,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onLoginClick }) => {
     <div className="flex justify-center pt-4 sm:pt-6 px-3 sm:px-4 w-full select-none" style={{ fontFamily: 'Inter, sans-serif' }}>
       <div className="bg-white rounded-full shadow-sm border border-neutral-200 pl-4 pr-2 py-2 w-full max-w-[760px] relative flex items-center justify-between z-30">
         {/* Logo and Brand */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center pl-1">
           <Logo />
-          <span className="font-semibold text-neutral-900 tracking-tight text-sm sm:text-base">Convix</span>
         </div>
 
         {/* Desktop Nav Links */}
         <div className="hidden md:flex items-center gap-6 text-[14px] font-medium text-neutral-600">
           <a href="#home" className="hover:text-neutral-900 flex items-center gap-1.5 text-neutral-950 font-semibold">
+            <span className="w-[4.5px] h-[4.5px] bg-black rounded-full"></span>
             Home
-            <span className="w-[4px] h-[4px] bg-black rounded-full"></span>
           </a>
           <a href="#features" className="hover:text-neutral-900">Features</a>
           <a href="#about" className="hover:text-neutral-900">About</a>
-          <a href="#pages" className="hover:text-[#ef4d23] text-neutral-600 flex items-center gap-1">
+          <a href="#pages" className="hover:text-[#ef4d23] text-[#ef4d23] font-semibold flex items-center gap-1">
             Pages
-            <ChevronDown size={14} strokeWidth={3.5} className="text-[#ef4d23]" />
+            <ChevronDown size={12} strokeWidth={3.5} className="text-[#ef4d23]" />
           </a>
         </div>
 

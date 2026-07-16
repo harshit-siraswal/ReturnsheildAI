@@ -259,6 +259,28 @@ returnshield-frontend/
 - **Bezel cards** (layered border + gradient) look premium
 - **Teal + amber** combo feels fintech without being cliché
 
+## 5. Responsive Landing Page & Hero Section (Convix Software)
+
+We implemented a beautiful, responsive landing page for the website under `src/app/` using the exact layout and component specifications requested:
+*   **Fonts (`src/styles/fonts.css`)**: Imported `Inter` (weights 400, 500, 600, 700) and `Instrument Serif` (regular + italic) from Google Fonts.
+*   **Video-Driven Hero Frame**: Clipped relative hero frame featuring a high-performance looping CloudFront background video, a white 10% overlay, and rounded viewport corners (`rounded-2xl sm:rounded-3xl`).
+*   **Floating Pill Navbar**: Floating white pill header featuring a custom `#ef4d23` 8-petal SVG flower logo, Lucide icons, responsive hover states, a stateful hamburger menu, and a dropdown menu drawer for smaller screen resolutions.
+*   **Dashboard preview panel**: Responsive tray at the bottom of the hero section containing three white cards:
+    - **Card 1 (Clicks)**: Interactive stat details, impressions/clicks toggle, and a custom `Gauge` component drawn dynamically in SVG with 40 tick marks at 92%.
+    - **Card 2 (Form)**: Dropdowns, inputs with `#` indicators, and Save/Cancel buttons.
+    - **Card 3 (Video Starts)**: Target stats and a neutral `Gauge` at 68%.
+*   **ReturnShield AI Integration Showcase**: Placed directly below the main hero section to showcase live analytics. Features the uploaded **Analytics Cohort Analysis** and **Revenue Protection Overview** dashboard screenshots alongside custom feature descriptions.
+*   **Interactive Funnel**: Clicking the Navbar action button or "Get Started" triggers the ReturnShield login/workspace. A sidebar menu action ("Exit to Landing") allows analysts to easily return to the landing page.
+
+---
+
+### If you need to add your Groq API Key to Vercel:
+You can copy-paste this line into Vercel's **Environment Variables** settings panel (under Project Settings -> Environment Variables) to enable the AI Co-Pilot chat out-of-the-box:
+
+```env
+GROQ_API_KEY=your_groq_api_key_here
+```
+
 ### 🛠️ What to Watch For
 - **Inline styles** vs CSS modules — team preference needed
 - **Form validation** — need strategy before Phase 2

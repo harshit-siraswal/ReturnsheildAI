@@ -20,9 +20,9 @@ export const DashboardPreview: React.FC = () => {
           <div className="bg-white rounded-2xl p-5 border border-neutral-100 shadow-sm flex flex-col justify-between min-h-[360px]">
             <div>
               {/* Header */}
-              <div className="flex justify-between items-center text-[13px] mb-4">
+              <div className="text-[13px] mb-4 flex items-center gap-1.5">
                 <span className="font-semibold text-[#ef4d23]">Clicks</span>
-                <span className="text-neutral-400 font-medium">This Month</span>
+                <span className="text-neutral-500 font-medium">This Month</span>
               </div>
               
               {/* Stat Row */}
@@ -90,7 +90,7 @@ export const DashboardPreview: React.FC = () => {
             {/* Input 1 */}
             <div className="flex flex-col gap-1.5">
               <label className="text-[12px] font-medium text-neutral-500">Ste targets (This month)</label>
-              <div className="flex items-center border border-neutral-200 rounded-lg px-3 py-2 bg-neutral-50 focus-within:border-neutral-400 focus-within:bg-white transition-all">
+              <div className="flex items-center border border-neutral-200 rounded-lg px-3 py-2 bg-white focus-within:border-neutral-400 transition-all">
                 <span className="text-neutral-400 text-[13px] font-medium mr-1.5">#</span>
                 <input
                   type="number"
@@ -104,7 +104,7 @@ export const DashboardPreview: React.FC = () => {
             {/* Input 2 */}
             <div className="flex flex-col gap-1.5">
               <label className="text-[12px] font-medium text-neutral-500">Ste targets (This year)</label>
-              <div className="flex items-center border border-neutral-200 rounded-lg px-3 py-2 bg-neutral-50 focus-within:border-neutral-400 focus-within:bg-white transition-all">
+              <div className="flex items-center border border-neutral-200 rounded-lg px-3 py-2 bg-white focus-within:border-neutral-400 transition-all">
                 <span className="text-neutral-400 text-[13px] font-medium mr-1.5">#</span>
                 <input
                   type="number"
@@ -133,9 +133,9 @@ export const DashboardPreview: React.FC = () => {
           <div className="bg-white rounded-2xl p-5 border border-neutral-100 shadow-sm flex flex-col justify-between min-h-[360px]">
             <div>
               {/* Header */}
-              <div className="flex justify-between items-center text-[13px] mb-4">
+              <div className="text-[13px] mb-4 flex items-center gap-1.5">
                 <span className="font-semibold text-[#ef4d23]">Video Starts</span>
-                <span className="text-neutral-400 font-medium">today</span>
+                <span className="text-neutral-500 font-medium">today</span>
               </div>
               
               {/* Stat Row */}

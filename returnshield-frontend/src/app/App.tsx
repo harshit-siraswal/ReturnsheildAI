@@ -71,7 +71,7 @@ export const ConvixLandingPage: React.FC<AppProps> = ({
               <span style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400 }}>
                 Agencies
               </span>{' '}
-              <br className="hidden sm:inline" />
+              <br />
               of tomorrow
             </h1>
 
@@ -99,7 +99,7 @@ export const ConvixLandingPage: React.FC<AppProps> = ({
           </div>
 
           {/* Dashboard Preview (Bleeding Bottom) */}
-          <div className="w-full mt-auto translate-y-12 sm:translate-y-20 select-none">
+          <div className="w-full mt-auto translate-y-28 sm:translate-y-36 select-none">
             <DashboardPreview />
           </div>
         </div>
