@@ -28,33 +28,33 @@ export const Navbar: React.FC<NavbarProps> = ({ onLoginClick }) => {
   );
 
   return (
-    <div className="flex justify-center pt-4 sm:pt-6 px-3 sm:px-4 w-full select-none" style={{ fontFamily: 'Inter, sans-serif' }}>
-      <div className="bg-white rounded-full shadow-sm border border-neutral-200 pl-4 pr-2 py-2 w-full max-w-[760px] relative flex items-center justify-between z-30">
-        {/* Logo and Brand */}
-        <div className="flex items-center pl-1">
+    <div className="landing-nav-wrapper">
+      <div className="landing-nav-pill">
+        {/* Logo */}
+        <div className="landing-logo">
           <Logo />
         </div>
 
         {/* Desktop Nav Links */}
-        <div className="hidden md:flex items-center gap-6 text-[14px] font-medium text-neutral-600">
-          <a href="#home" className="hover:text-neutral-900 flex items-center gap-1.5 text-neutral-950 font-semibold">
-            <span className="w-[4.5px] h-[4.5px] bg-black rounded-full"></span>
+        <div className="landing-links">
+          <a href="#home" className="landing-link active">
+            <span className="landing-link-dot"></span>
             Home
           </a>
-          <a href="#features" className="hover:text-neutral-900">Features</a>
-          <a href="#about" className="hover:text-neutral-900">About</a>
-          <a href="#pages" className="hover:text-[#ef4d23] text-[#ef4d23] font-semibold flex items-center gap-1">
+          <a href="#features" className="landing-link">Features</a>
+          <a href="#about" className="landing-link">About</a>
+          <a href="#pages" className="landing-link pages-link">
             Pages
-            <ChevronDown size={12} strokeWidth={3.5} className="text-[#ef4d23]" />
+            <ChevronDown size={12} strokeWidth={3.5} />
           </a>
         </div>
 
         {/* Right cluster */}
-        <div className="flex items-center gap-3 sm:gap-4 ml-auto">
+        <div className="landing-right-cluster">
           {/* Shopping Cart (desktop only) */}
           <button 
             type="button" 
-            className="hidden md:flex p-1.5 hover:bg-neutral-100 rounded-full text-neutral-600 hover:text-neutral-900 transition-colors"
+            className="landing-cart-btn"
             aria-label="Shopping Cart"
           >
             <ShoppingCart size={20} />
@@ -64,11 +64,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onLoginClick }) => {
           <button
             type="button"
             onClick={onLoginClick}
-            className="bg-[#ef4d23] hover:bg-[#d83c16] text-white rounded-full pl-4 pr-1.5 py-1.5 flex items-center gap-2 text-[12px] sm:text-[14px] font-medium transition-colors cursor-pointer"
+            className="landing-access-btn"
           >
             <span className="hidden sm:inline">Get early access</span>
             <span className="sm:hidden">Early access</span>
-            <span className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 text-white">
+            <span className="landing-access-icon">
               <ChevronRight size={14} strokeWidth={3.5} />
             </span>
           </button>
@@ -77,7 +77,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onLoginClick }) => {
           <button
             type="button"
             onClick={toggleMenu}
-            className="md:hidden p-1.5 hover:bg-neutral-100 rounded-full text-neutral-600 transition-colors"
+            className="landing-hamburger-btn"
             aria-expanded={isOpen}
             aria-label="Toggle menu"
           >
@@ -87,33 +87,34 @@ export const Navbar: React.FC<NavbarProps> = ({ onLoginClick }) => {
 
         {/* Dropdown panel for mobile links */}
         {isOpen && (
-          <div className="absolute top-full left-2 right-2 mt-2 bg-white rounded-2xl shadow-lg border border-neutral-200 p-3 z-20 md:hidden flex flex-col gap-1">
+          <div className="landing-mobile-dropdown">
             <a
               href="#home"
               onClick={() => setIsOpen(false)}
-              className="px-4 py-2.5 rounded-xl hover:bg-neutral-50 text-[14px] font-semibold text-neutral-900 flex items-center justify-between"
+              className="landing-mobile-link active"
             >
               Home
-              <span className="w-1.5 h-1.5 bg-black rounded-full"></span>
+              <span className="landing-link-dot"></span>
             </a>
             <a
               href="#features"
-              onClick={() => setIsOpenOpen(false)}
-              className="px-4 py-2.5 rounded-xl hover:bg-neutral-50 text-[14px] font-medium text-neutral-600 hover:text-neutral-900"
+              onClick={() => setIsOpen(false)}
+              className="landing-mobile-link"
             >
               Features
             </a>
             <a
               href="#about"
               onClick={() => setIsOpen(false)}
-              className="px-4 py-2.5 rounded-xl hover:bg-neutral-50 text-[14px] font-medium text-neutral-600 hover:text-neutral-900"
+              className="landing-mobile-link"
             >
               About
             </a>
             <a
               href="#pages"
               onClick={() => setIsOpen(false)}
-              className="px-4 py-2.5 rounded-xl hover:bg-neutral-50 text-[14px] font-medium text-[#ef4d23] flex items-center justify-between"
+              className="landing-mobile-link"
+              style={{ color: 'var(--convix-orange)', fontWeight: 600 }}
             >
               Pages
               <ChevronDown size={14} strokeWidth={3.5} />
@@ -123,9 +124,4 @@ export const Navbar: React.FC<NavbarProps> = ({ onLoginClick }) => {
       </div>
     </div>
   );
-
-  // Helper type fix
-  function setIsOpenOpen(val: boolean) {
-    setIsOpen(val);
-  }
 };

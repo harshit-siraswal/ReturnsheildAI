@@ -34,7 +34,7 @@ export const Gauge: React.FC<GaugeProps> = ({
   });
 
   return (
-    <div className="w-full flex flex-col items-center select-none" style={{ maxWidth: '260px', margin: '0 auto' }}>
+    <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', userSelect: 'none', maxWidth: '260px', margin: '0 auto' }}>
       <svg viewBox="0 0 200 120" className="w-full h-auto">
         {ticks.map((tick, index) => (
           <line
@@ -61,7 +61,7 @@ export const Gauge: React.FC<GaugeProps> = ({
         </text>
       </svg>
       {showLabels && (
-        <div className="w-full flex justify-between px-3 -mt-2 text-[11px] text-neutral-500 font-medium" style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', padding: '0 12px', marginTop: '-8px', fontSize: '11px', color: '#737373', fontWeight: 500, fontFamily: 'Inter, sans-serif' }}>
           <span>{min}</span>
           <span>{max}</span>
         </div>
