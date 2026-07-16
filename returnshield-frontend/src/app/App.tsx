@@ -181,7 +181,7 @@ export const ConvixLandingPage: React.FC<AppProps> = ({
             </div>
             <div className="showcase-img-container">
               <img
-                src="/screenshot-analytics.png"
+                src="/showcase-analytics.svg"
                 alt="ReturnShield Analytics Cohort Analysis Dashboard"
                 className="showcase-img"
               />
@@ -201,7 +201,7 @@ export const ConvixLandingPage: React.FC<AppProps> = ({
             </div>
             <div className="showcase-img-container">
               <img
-                src="/screenshot-overview.png"
+                src="/showcase-overview.svg"
                 alt="ReturnShield Revenue Protection Overview Dashboard"
                 className="showcase-img"
               />

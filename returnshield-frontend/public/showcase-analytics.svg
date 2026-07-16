@@ -1,0 +1,32 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" rx="32" fill="#0B1020"/>
+  <rect x="56" y="56" width="1168" height="608" rx="28" fill="#11172B" stroke="#1E2742"/>
+  <rect x="92" y="92" width="340" height="20" rx="10" fill="#1C2440"/>
+  <rect x="92" y="146" width="260" height="16" rx="8" fill="#D7DEE9"/>
+  <rect x="92" y="174" width="420" height="12" rx="6" fill="#60708D"/>
+  <rect x="92" y="194" width="380" height="12" rx="6" fill="#60708D"/>
+  <rect x="92" y="214" width="320" height="12" rx="6" fill="#60708D"/>
+  <rect x="92" y="256" width="1096" height="356" rx="22" fill="#0C1327" stroke="#1E2742"/>
+  <path d="M126 566C218 510 258 520 330 486C420 444 476 384 574 354C666 326 714 352 790 316C866 280 920 214 1006 182C1080 154 1132 150 1160 150" stroke="#FF6A3D" stroke-width="6" stroke-linecap="round"/>
+  <path d="M126 566C218 510 258 520 330 486C420 444 476 384 574 354C666 326 714 352 790 316C866 280 920 214 1006 182C1080 154 1132 150 1160 150V622H126V566Z" fill="url(#paint0_linear_1)"/>
+  <circle cx="1160" cy="150" r="10" fill="#FF6A3D"/>
+  <rect x="878" y="112" width="220" height="110" rx="18" fill="#141C33" stroke="#24304E"/>
+  <text x="906" y="150" fill="#E9EEF7" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700">Cohort risk</text>
+  <text x="906" y="182" fill="#8A97B1" font-family="Inter, Arial, sans-serif" font-size="16">Top driver: fragile SKU mix</text>
+  <rect x="936" y="278" width="300" height="16" rx="8" fill="#1B233D"/>
+  <rect x="936" y="310" width="246" height="16" rx="8" fill="#1B233D"/>
+  <rect x="936" y="342" width="274" height="16" rx="8" fill="#1B233D"/>
+  <rect x="936" y="278" width="182" height="16" rx="8" fill="#FF6A3D"/>
+  <rect x="936" y="310" width="210" height="16" rx="8" fill="#69DED5"/>
+  <rect x="936" y="342" width="130" height="16" rx="8" fill="#F9B24B"/>
+  <circle cx="175" cy="620" r="34" fill="#18213B"/>
+  <circle cx="1120" cy="610" r="34" fill="#18213B"/>
+  <path d="M151 603L175 621L219 575" stroke="#69DED5" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M1099 619L1120 602L1146 635" stroke="#FF6A3D" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <defs>
+    <linearGradient id="paint0_linear_1" x1="640" y1="150" x2="640" y2="622" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF6A3D" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#FF6A3D" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -499,7 +499,7 @@ function AppShell() {
         onNavClick={setActiveNav}
         onSettings={() => setSettingsOpen(true)}
         onSignOut={handleLogout}
-        onBackToLanding={() => setShowDashboard(false)}
+        onBackToLanding={() => navigateTo('landing')}
         orderCount={orders.filter((o) => o.status === 'New' || o.status === 'Assigned').length + 85}
         isCollapsed={isSidebarCollapsed}
         onToggleCollapse={() => setIsSidebarCollapsed((prev) => !prev)}

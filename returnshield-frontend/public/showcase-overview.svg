@@ -1,0 +1,34 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" rx="32" fill="#07131A"/>
+  <rect x="56" y="56" width="1168" height="608" rx="28" fill="#0D1B27" stroke="#203346"/>
+  <rect x="92" y="92" width="180" height="20" rx="10" fill="#173042"/>
+  <rect x="92" y="146" width="360" height="14" rx="7" fill="#D8E1EA"/>
+  <rect x="92" y="170" width="500" height="12" rx="6" fill="#6E8294"/>
+  <rect x="92" y="190" width="430" height="12" rx="6" fill="#6E8294"/>
+  <rect x="92" y="236" width="1096" height="332" rx="24" fill="#091521" stroke="#203346"/>
+  <rect x="124" y="272" width="306" height="80" rx="18" fill="#112233" stroke="#26384E"/>
+  <rect x="124" y="378" width="306" height="80" rx="18" fill="#112233" stroke="#26384E"/>
+  <rect x="124" y="484" width="306" height="80" rx="18" fill="#112233" stroke="#26384E"/>
+  <circle cx="160" cy="312" r="18" fill="#FF6A3D"/>
+  <circle cx="160" cy="418" r="18" fill="#F9B24B"/>
+  <circle cx="160" cy="524" r="18" fill="#69DED5"/>
+  <rect x="200" y="292" width="170" height="14" rx="7" fill="#EAF1F8"/>
+  <rect x="200" y="316" width="138" height="10" rx="5" fill="#73869A"/>
+  <rect x="200" y="398" width="140" height="14" rx="7" fill="#EAF1F8"/>
+  <rect x="200" y="422" width="120" height="10" rx="5" fill="#73869A"/>
+  <rect x="200" y="504" width="158" height="14" rx="7" fill="#EAF1F8"/>
+  <rect x="200" y="528" width="132" height="10" rx="5" fill="#73869A"/>
+  <rect x="476" y="272" width="750" height="274" rx="22" fill="#0B1622" stroke="#26384E"/>
+  <path d="M516 492L606 470L684 438L752 392L820 402L900 344L980 360L1068 276L1184 250" stroke="#69DED5" stroke-width="6" stroke-linecap="round"/>
+  <path d="M516 492L606 470L684 438L752 392L820 402L900 344L980 360L1068 276L1184 250V534H516V492Z" fill="url(#paint0_linear_2)"/>
+  <circle cx="1184" cy="250" r="10" fill="#69DED5"/>
+  <rect x="932" y="96" width="214" height="90" rx="18" fill="#132532" stroke="#26384E"/>
+  <text x="958" y="132" fill="#EAF1F8" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Loss prevented</text>
+  <text x="958" y="160" fill="#8FA2B3" font-family="Inter, Arial, sans-serif" font-size="15">Automated interventions</text>
+  <defs>
+    <linearGradient id="paint0_linear_2" x1="850" y1="250" x2="850" y2="534" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#69DED5" stop-opacity="0.24"/>
+      <stop offset="1" stop-color="#69DED5" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>
