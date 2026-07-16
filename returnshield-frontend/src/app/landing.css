@@ -76,8 +76,12 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  justify-content: space-between;
+  justify-content: flex-start;
   box-sizing: border-box;
+  pointer-events: none; /* let clicks pass through to buttons below */
+}
+.landing-content-wrapper > * {
+  pointer-events: auto;
 }
 
 /* Navbar */
@@ -308,11 +312,14 @@
   padding: 32px 16px 20px;
   text-align: center;
   max-width: 900px;
-  margin: auto;
+  margin: 0 auto;
   box-sizing: border-box;
   z-index: 10;
-  flex-grow: 1;
+  /* center vertically in the remaining space above the preview */
+  flex: 1;
   justify-content: center;
+  /* leave bottom room for the absolute preview (roughly 55% of viewport) */
+  padding-bottom: 45vh;
 }
 
 .landing-badge {
@@ -406,16 +413,20 @@
   }
 }
 
-/* Push tray preview into bottom of hero container with bleeding effect */
-.landing-preview-pusher {
-  width: 100%;
-  margin-top: auto;
-  transform: translateY(calc(100% - 60px));
+/* Dashboard preview — absolutely pinned to hero bottom, bleeds out */
+.landing-preview-abs {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  padding: 0 12px;
+  box-sizing: border-box;
 }
 
 @media (min-width: 640px) {
-  .landing-preview-pusher {
-    transform: translateY(calc(100% - 80px));
+  .landing-preview-abs {
+    padding: 0 24px;
   }
 }
 

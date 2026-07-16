@@ -97,10 +97,11 @@ export const ConvixLandingPage: React.FC<AppProps> = ({
             </button>
           </div>
 
-          {/* Dashboard Preview (Bleeding Bottom) */}
-          <div className="landing-preview-pusher">
-            <DashboardPreview />
-          </div>
+        </div>
+
+        {/* Dashboard Preview — absolutely pinned to bottom, bleeds out */}
+        <div className="landing-preview-abs">
+          <DashboardPreview />
         </div>
 
       </div>
