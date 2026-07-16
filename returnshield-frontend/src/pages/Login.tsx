@@ -10,6 +10,8 @@ import {
   Sparkle,
   User,
 } from '@phosphor-icons/react'
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
+import { auth } from '../lib/firebase'
 import { DEMO_EMAIL, DEMO_PASSWORD } from '../lib/data'
 import { useToast } from '../lib/toast'
 
@@ -56,25 +58,38 @@ export function Login({ onLogin }: LoginProps) {
     }
   }
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
     if (isSigningIn) return
 
     const cleanEmail = email.trim().toLowerCase()
     if (!cleanEmail || !password) {
-      setError('Enter the demo email and password to continue.')
-      return
-    }
-    if (cleanEmail !== DEMO_EMAIL || password !== DEMO_PASSWORD) {
-      setError('Those credentials do not match the demo account. Use the demo access card below.')
+      setError('Enter your work email and password to continue.')
       return
     }
 
     setError(null)
     setIsSigningIn(true)
-    window.setTimeout(() => {
+    try {
+      await signInWithEmailAndPassword(auth, cleanEmail, password)
       onLogin()
-    }, 720)
+    } catch (signInErr: any) {
+      if (signInErr.code === 'auth/user-not-found' || signInErr.code === 'auth/invalid-credential') {
+        try {
+          await createUserWithEmailAndPassword(auth, cleanEmail, password)
+          pushToast({ title: 'Account provisioned', body: 'Created a new Firebase Auth account for this email.', tone: 'success' })
+          onLogin()
+        } catch (signUpErr: any) {
+          console.error('Sign up error:', signUpErr)
+          setError(signUpErr.message || 'Authentication failed. Please check your credentials.')
+          setIsSigningIn(false)
+        }
+      } else {
+        console.error('Sign in error:', signInErr)
+        setError(signInErr.message || 'Could not verify credentials. Try again.')
+        setIsSigningIn(false)
+      }
+    }
   }
 
   return (

@@ -5,6 +5,7 @@ import {
   CaretDown,
   ChartLineUp,
   Check,
+  CircleNotch,
   ClockCountdown,
   Clock,
   FadersHorizontal,
@@ -55,8 +56,10 @@ import {
   type Policy,
 } from './lib/data'
 import { chartPoints, downloadOrdersCSV, getGroqExplanation } from './lib/utils'
+import { onAuthStateChanged, signOut } from 'firebase/auth'
+import { auth } from './lib/firebase'
 
-const AUTH_KEY = 'returnshield-demo-auth'
+
 
 type PriorityFilter = 'All' | 'P0' | 'P1' | 'P2'
 type PaymentFilter = 'All' | 'COD' | 'UPI' | 'Card'
@@ -73,7 +76,16 @@ const navHints: Record<string, string> = {
 
 function AppShell() {
   const { pushToast } = useToast()
-  const [isAuthed, setIsAuthed] = useState(() => sessionStorage.getItem(AUTH_KEY) === '1')
+  const [firebaseUser, setFirebaseUser] = useState<any>(null)
+  const [authLoading, setAuthLoading] = useState(true)
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setFirebaseUser(user)
+      setAuthLoading(false)
+    })
+    return unsubscribe
+  }, [])
 
   const [activeNav, setActiveNav] = useState('Overview')
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
@@ -226,21 +238,31 @@ function AppShell() {
     })
   }
 
-  const handleLogout = () => {
-    sessionStorage.removeItem(AUTH_KEY)
-    setIsAuthed(false)
+  const handleLogout = async () => {
+    try {
+      await signOut(auth)
+      pushToast({ title: 'Signed out', body: 'You have been signed out successfully.', tone: 'info' })
+    } catch (err) {
+      console.error('Sign out error:', err)
+    }
     setActiveNav('Overview')
     setIsDrawerOpen(false)
     setSettingsOpen(false)
   }
 
-  if (!isAuthed) {
+  if (authLoading) {
+    return (
+      <div className="login-shell" style={{ display: 'grid', placeItems: 'center', height: '100dvh' }}>
+        <CircleNotch size={32} weight="light" className="spin" style={{ color: '#55c8c0' }} />
+      </div>
+    )
+  }
+
+  if (!firebaseUser) {
     return (
       <Login
         onLogin={() => {
-          sessionStorage.setItem(AUTH_KEY, '1')
-          setIsAuthed(true)
-          pushToast({ title: 'Welcome back', body: 'Signed in to Northstar Retail as Demo Analyst.', tone: 'success' })
+          pushToast({ title: 'Welcome back', body: `Signed in as ${auth.currentUser?.email || 'user'}.`, tone: 'success' })
         }}
       />
     )
