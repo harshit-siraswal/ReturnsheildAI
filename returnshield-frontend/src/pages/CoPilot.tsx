@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from 'react'
 import { Sparkle, CircleNotch, PaperPlaneRight } from '@phosphor-icons/react'
 import type { Order } from '../lib/data'
 import { fetchGroqAPI } from '../lib/utils'
-import { ResponseStream } from '@/components/ui/response-stream'
 
 interface Message {
   id: string
@@ -131,17 +130,7 @@ export function CoPilot({ orders }: CoPilotProps) {
               {msg.role === 'assistant' ? 'AI' : 'Owner'}
             </div>
             <div className="message-content">
-              {msg.role === 'assistant' ? (
-                <ResponseStream
-                  textStream={msg.content}
-                  mode="fade"
-                  speed={32}
-                  as="div"
-                  className="copilot-stream"
-                />
-              ) : (
-                <p>{msg.content}</p>
-              )}
+              <p>{msg.content}</p>
             </div>
           </div>
         ))}
