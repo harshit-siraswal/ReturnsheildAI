@@ -2,10 +2,11 @@ import React, { type ReactNode } from 'react'
 
 interface LayoutProps {
   children: ReactNode
+  isCollapsed?: boolean
 }
 
-export const Layout: React.FC<LayoutProps> = ({ children }) => {
-  return <div className="app-shell">{children}</div>
+export const Layout: React.FC<LayoutProps> = ({ children, isCollapsed }) => {
+  return <div className={`app-shell ${isCollapsed ? 'is-collapsed' : ''}`}>{children}</div>
 }
 
 interface MainProps {

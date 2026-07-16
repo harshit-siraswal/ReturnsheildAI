@@ -1,5 +1,5 @@
 import React from 'react'
-import { CaretDown, Gear, SignOut } from '@phosphor-icons/react'
+import { CaretDown, CaretLeft, CaretRight, Gear, SignOut } from '@phosphor-icons/react'
 
 type NavItem = {
   label: string
@@ -17,6 +17,8 @@ interface SidebarProps {
   workspace?: { name: string; avatar: string }
   user?: { name: string; role: string; avatar: string }
   orderCount?: number
+  isCollapsed?: boolean
+  onToggleCollapse?: () => void
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -28,20 +30,33 @@ export const Sidebar: React.FC<SidebarProps> = ({
   workspace = { name: 'Northstar Retail', avatar: 'NS' },
   user = { name: 'Demo Analyst', role: 'Risk analyst', avatar: 'DA' },
   orderCount = 93,
+  isCollapsed = false,
+  onToggleCollapse,
 }) => {
   const [userMenuOpen, setUserMenuOpen] = React.useState(false)
 
   return (
-    <aside className="sidebar" aria-label="Primary navigation">
+    <aside className={`sidebar ${isCollapsed ? 'is-collapsed' : ''}`} aria-label="Primary navigation">
       <div>
-        <a className="brand" href="#overview" aria-label="ReturnShield AI home">
-          <span className="brand-mark" aria-hidden="true">
-            <span></span>
-            <span></span>
-            <span></span>
-          </span>
-          <span>ReturnShield</span>
-        </a>
+        <div className="sidebar-header">
+          <a className="brand" href="#overview" aria-label="ReturnShield AI home">
+            <span className="brand-mark" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+            {!isCollapsed && <span>ReturnShield</span>}
+          </a>
+          <button
+            type="button"
+            className="collapse-toggle"
+            onClick={onToggleCollapse}
+            title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            {isCollapsed ? <CaretRight size={14} weight="bold" /> : <CaretLeft size={14} weight="bold" />}
+          </button>
+        </div>
 
         <button
           type="button"
@@ -49,11 +64,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           title="Workspace switching is scoped to a single pilot tenant in this demo"
         >
           <span className="workspace-avatar">{workspace.avatar}</span>
-          <span>
-            <small>Workspace</small>
-            <strong>{workspace.name}</strong>
-          </span>
-          <CaretDown size={14} weight="light" />
+          {!isCollapsed && (
+            <span>
+              <small>Workspace</small>
+              <strong>{workspace.name}</strong>
+            </span>
+          )}
+          {!isCollapsed && <CaretDown size={14} weight="light" />}
         </button>
 
         <nav className="nav-list">
@@ -63,12 +80,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
               className={`nav-item ${activeNav === item.label ? 'is-active' : ''}`.trim()}
               onClick={() => onNavClick(item.label)}
               type="button"
-              title={item.hint}
+              title={item.hint ?? item.label}
               aria-current={activeNav === item.label ? 'page' : undefined}
             >
               {item.icon}
-              <span>{item.label}</span>
-              {item.count && <em>{item.count}</em>}
+              {!isCollapsed && <span>{item.label}</span>}
+              {!isCollapsed && item.count && <em>{item.count}</em>}
             </button>
           ))}
         </nav>
@@ -77,7 +94,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="sidebar-footer">
         <div className="portfolio-pulse">
           <span className="pulse-dot"></span>
-          <span>{orderCount} orders need review</span>
+          {!isCollapsed && <span>{orderCount} orders need review</span>}
         </div>
         <button
           className="help-link"
@@ -86,7 +103,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           title="Thresholds, playbooks, roles, and retention"
         >
           <Gear size={17} weight="light" aria-hidden="true" />
-          Workspace settings
+          {!isCollapsed && <span>Workspace settings</span>}
         </button>
         <div className="analyst-wrap">
           <button
@@ -97,16 +114,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
             title="Account menu"
           >
             <span className="analyst-avatar">{user.avatar}</span>
-            <span>
-              <strong>{user.name}</strong>
-              <small>{user.role}</small>
-            </span>
-            <CaretDown size={14} weight="light" aria-hidden="true" className={userMenuOpen ? 'caret-open' : ''} />
+            {!isCollapsed && (
+              <span>
+                <strong>{user.name}</strong>
+                <small>{user.role}</small>
+              </span>
+            )}
+            {!isCollapsed && <CaretDown size={14} weight="light" aria-hidden="true" className={userMenuOpen ? 'caret-open' : ''} />}
           </button>
           {userMenuOpen && (
             <div className="analyst-menu" role="menu">
               <button type="button" role="menuitem" onClick={() => { setUserMenuOpen(false); onSignOut?.() }}>
-                <SignOut size={15} weight="light" /> Sign out
+                <SignOut size={15} weight="light" /> {!isCollapsed ? 'Sign out' : 'Out'}
               </button>
             </div>
           )}
