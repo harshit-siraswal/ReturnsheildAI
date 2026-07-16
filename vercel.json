@@ -1,0 +1,7 @@
+{
+  "buildCommand": "cd returnshield-frontend && npm install && npm run build",
+  "outputDirectory": "returnshield-frontend/dist",
+  "rewrites": [
+    { "source": "/((?!.*\\.).*)", "destination": "/index.html" }
+  ]
+}
