@@ -2,7 +2,6 @@ import React, { type ReactNode } from 'react'
 
 interface LayoutProps {
   children: ReactNode
-  sidebarOpen?: boolean
 }
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
@@ -24,7 +23,7 @@ interface SectionProps {
 }
 
 export const Section: React.FC<SectionProps> = ({ children, className = '', id }) => (
-  <section className={`${className}`} id={id}>
+  <section className={className} id={id}>
     {children}
   </section>
 )
@@ -36,19 +35,12 @@ interface PageHeadingProps {
   actions?: ReactNode
 }
 
-export const PageHeading: React.FC<PageHeadingProps> = ({
-  eyebrow,
-  title,
-  description,
-  actions,
-}) => (
+export const PageHeading: React.FC<PageHeadingProps> = ({ eyebrow, title, description, actions }) => (
   <section className="page-heading" aria-labelledby="page-title">
     <div>
       {eyebrow && <div className="eyebrow">{eyebrow}</div>}
-      <h1 id="page-title" className="text-[clamp(34px,4vw,54px)]">
-        {title}
-      </h1>
-      {description && <p className="mt-3.75 text-[13px]">{description}</p>}
+      <h1 id="page-title">{title}</h1>
+      {description && <p>{description}</p>}
     </div>
     {actions && <div className="heading-actions">{actions}</div>}
   </section>

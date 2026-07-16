@@ -1,80 +1,36 @@
 import React from 'react'
-import {
-  House,
-  ListChecks,
-  Package,
-  ChartLineUp,
-  FadersHorizontal,
-  ShieldCheck,
-  CaretDown,
-  Gear,
-} from '@phosphor-icons/react'
+import { CaretDown, Gear, SignOut } from '@phosphor-icons/react'
 
 type NavItem = {
   label: string
   icon: React.ReactNode
   count?: string
-  action: () => void
+  hint?: string
 }
 
 interface SidebarProps {
   activeNav: string
   navItems: NavItem[]
   onNavClick: (label: string) => void
-  workspace?: {
-    name: string
-    avatar: string
-  }
-  user?: {
-    name: string
-    role: string
-    avatar: string
-  }
+  onSettings?: () => void
+  onSignOut?: () => void
+  workspace?: { name: string; avatar: string }
+  user?: { name: string; role: string; avatar: string }
   orderCount?: number
 }
 
-const defaultNavItems: NavItem[] = [
-  {
-    label: 'Overview',
-    icon: <House size={18} weight="light" />,
-    action: () => {},
-  },
-  {
-    label: 'Risk queue',
-    icon: <ListChecks size={18} weight="light" />,
-    count: '93',
-    action: () => {},
-  },
-  {
-    label: 'Orders',
-    icon: <Package size={18} weight="light" />,
-    action: () => {},
-  },
-  {
-    label: 'Analytics',
-    icon: <ChartLineUp size={18} weight="light" />,
-    action: () => {},
-  },
-  {
-    label: 'Policies',
-    icon: <FadersHorizontal size={18} weight="light" />,
-    action: () => {},
-  },
-  {
-    label: 'Model health',
-    icon: <ShieldCheck size={18} weight="light" />,
-    action: () => {},
-  },
-]
-
 export const Sidebar: React.FC<SidebarProps> = ({
   activeNav,
-  navItems = defaultNavItems,
+  navItems,
   onNavClick,
+  onSettings,
+  onSignOut,
   workspace = { name: 'Northstar Retail', avatar: 'NS' },
-  user = { name: 'Harsh Kapoor', role: 'Risk analyst', avatar: 'HK' },
+  user = { name: 'Demo Analyst', role: 'Risk analyst', avatar: 'DA' },
   orderCount = 93,
 }) => {
+  const [userMenuOpen, setUserMenuOpen] = React.useState(false)
+
   return (
     <aside className="sidebar" aria-label="Primary navigation">
       <div>
@@ -87,22 +43,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <span>ReturnShield</span>
         </a>
 
-        <div className="workspace-switcher">
+        <button
+          type="button"
+          className="workspace-switcher"
+          title="Workspace switching is scoped to a single pilot tenant in this demo"
+        >
           <span className="workspace-avatar">{workspace.avatar}</span>
           <span>
             <small>Workspace</small>
             <strong>{workspace.name}</strong>
           </span>
           <CaretDown size={14} weight="light" />
-        </div>
+        </button>
 
         <nav className="nav-list">
           {navItems.map((item) => (
             <button
               key={item.label}
-              className={`nav-item ${activeNav === item.label ? 'is-active' : ''}`}
+              className={`nav-item ${activeNav === item.label ? 'is-active' : ''}`.trim()}
               onClick={() => onNavClick(item.label)}
               type="button"
+              title={item.hint}
+              aria-current={activeNav === item.label ? 'page' : undefined}
             >
               {item.icon}
               <span>{item.label}</span>
@@ -117,17 +79,37 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <span className="pulse-dot"></span>
           <span>{orderCount} orders need review</span>
         </div>
-        <button className="help-link" type="button">
+        <button
+          className="help-link"
+          type="button"
+          onClick={onSettings}
+          title="Thresholds, playbooks, roles, and retention"
+        >
           <Gear size={17} weight="light" aria-hidden="true" />
           Workspace settings
         </button>
-        <div className="analyst-card">
-          <span className="analyst-avatar">{user.avatar}</span>
-          <span>
-            <strong>{user.name}</strong>
-            <small>{user.role}</small>
-          </span>
-          <CaretDown size={14} weight="light" aria-hidden="true" />
+        <div className="analyst-wrap">
+          <button
+            type="button"
+            className="analyst-card"
+            onClick={() => setUserMenuOpen((open) => !open)}
+            aria-expanded={userMenuOpen}
+            title="Account menu"
+          >
+            <span className="analyst-avatar">{user.avatar}</span>
+            <span>
+              <strong>{user.name}</strong>
+              <small>{user.role}</small>
+            </span>
+            <CaretDown size={14} weight="light" aria-hidden="true" className={userMenuOpen ? 'caret-open' : ''} />
+          </button>
+          {userMenuOpen && (
+            <div className="analyst-menu" role="menu">
+              <button type="button" role="menuitem" onClick={() => { setUserMenuOpen(false); onSignOut?.() }}>
+                <SignOut size={15} weight="light" /> Sign out
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </aside>

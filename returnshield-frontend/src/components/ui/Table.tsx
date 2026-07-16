@@ -18,22 +18,15 @@ interface TableProps<T extends { id?: string | number }> {
 
 export const Table = React.forwardRef<HTMLTableElement, TableProps<any>>(
   ({ columns, data, onRowClick, isLoading, className = '' }, ref) => {
-    if (isLoading) return <div className="p-8 text-center text-[#8193a7]">Loading...</div>
+    if (isLoading) return <div className="table-loading">Loading…</div>
 
     return (
-      <div className="overflow-x-auto">
-        <table
-          ref={ref}
-          className={`w-full min-w-[850px] border-collapse text-left ${className}`}
-        >
+      <div className="queue-table-wrap">
+        <table ref={ref} className={className}>
           <thead>
             <tr>
               {columns.map((col) => (
-                <th
-                  key={String(col.key)}
-                  className={`px-3 py-2.75 text-[8px] font-[560] tracking-[0.08em] text-[#74869b] uppercase first:pl-4.75 last:pr-4.75`}
-                  style={{ width: col.width }}
-                >
+                <th key={String(col.key)} style={{ width: col.width }}>
                   {col.label}
                 </th>
               ))}
@@ -41,17 +34,9 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps<any>>(
           </thead>
           <tbody>
             {data.map((row, idx) => (
-              <tr
-                key={row.id || idx}
-                onClick={() => onRowClick?.(row)}
-                className="transition-colors hover:bg-[rgba(223,240,249,0.045)] border-t border-[rgba(197,219,236,0.06)] cursor-pointer"
-              >
+              <tr key={row.id || idx} onClick={() => onRowClick?.(row)}>
                 {columns.map((col) => (
-                  <td
-                    key={`${row.id || idx}-${String(col.key)}`}
-                    className={`px-3 py-3.5 text-[10px] text-[#bdcbd7] first:pl-4.75 last:pr-4.75`}
-                    style={{ textAlign: col.align || 'left' }}
-                  >
+                  <td key={`${row.id || idx}-${String(col.key)}`} style={{ textAlign: col.align || 'left' }}>
                     {col.render ? col.render(row[col.key], row) : String(row[col.key])}
                   </td>
                 ))}
