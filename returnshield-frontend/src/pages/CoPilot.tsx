@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { Sparkle, CircleNotch, PaperPlaneRight } from '@phosphor-icons/react'
 import type { Order } from '../lib/data'
+import { fetchGroqAPI } from '../lib/utils'
 
 interface Message {
   id: string
@@ -50,28 +51,11 @@ Guidelines:
 `
 
   try {
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'llama3-8b-8192',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          ...messages.map((m) => ({ role: m.role, content: m.content })),
-        ],
-        temperature: 0.6,
-        max_tokens: 450,
-      }),
-    })
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-
-    const data = await response.json()
+    const apiMessages = [
+      { role: 'system', content: systemPrompt },
+      ...messages.map((m) => ({ role: m.role, content: m.content })),
+    ]
+    const data = await fetchGroqAPI(apiMessages, apiKey)
     return data.choices[0]?.message?.content?.trim() || 'No response generated.'
   } catch (error) {
     console.error('Co-Pilot API error:', error)
