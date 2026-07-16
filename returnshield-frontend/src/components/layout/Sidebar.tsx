@@ -14,6 +14,7 @@ interface SidebarProps {
   onNavClick: (label: string) => void
   onSettings?: () => void
   onSignOut?: () => void
+  onBackToLanding?: () => void
   workspace?: { name: string; avatar: string }
   user?: { name: string; role: string; avatar: string }
   orderCount?: number
@@ -29,6 +30,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onNavClick,
   onSettings,
   onSignOut,
+  onBackToLanding,
   workspace = { name: 'Northstar Retail', avatar: 'NS' },
   user = { name: 'Demo Analyst', role: 'Risk analyst', avatar: 'DA' },
   orderCount = 93,
@@ -141,6 +143,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </button>
           {userMenuOpen && (
             <div className="analyst-menu" role="menu">
+              <button type="button" role="menuitem" onClick={() => { setUserMenuOpen(false); onBackToLanding?.() }} style={{ whiteSpace: 'nowrap' }}>
+                {!isCollapsed ? 'Exit to Landing' : 'Exit'}
+              </button>
               <button type="button" role="menuitem" onClick={() => { setUserMenuOpen(false); onSignOut?.() }}>
                 <SignOut size={15} weight="light" /> {!isCollapsed ? 'Sign out' : 'Out'}
               </button>

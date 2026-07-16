@@ -42,6 +42,7 @@ import { Dropdown } from './components/ui/Dropdown'
 import { MetricCard, ActionStack } from './components/dashboard'
 import { Login } from './pages/Login'
 import { CoPilot } from './pages/CoPilot'
+import { ConvixLandingPage } from './app/App'
 import { ToastProvider, useToast } from './lib/toast'
 import {
   orders as seedOrders,
@@ -80,6 +81,7 @@ function AppShell() {
   const { pushToast } = useToast()
   const [firebaseUser, setFirebaseUser] = useState<any>(null)
   const [authLoading, setAuthLoading] = useState(true)
+  const [showDashboard, setShowDashboard] = useState(false)
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -279,6 +281,16 @@ function AppShell() {
     )
   }
 
+  if (!showDashboard) {
+    return (
+      <ConvixLandingPage
+        onEnterWorkspace={() => setShowDashboard(true)}
+        isAuthenticated={!!firebaseUser}
+        userEmail={firebaseUser?.email}
+      />
+    )
+  }
+
   if (!firebaseUser) {
     return (
       <Login
@@ -457,6 +469,7 @@ function AppShell() {
         onNavClick={setActiveNav}
         onSettings={() => setSettingsOpen(true)}
         onSignOut={handleLogout}
+        onBackToLanding={() => setShowDashboard(false)}
         orderCount={orders.filter((o) => o.status === 'New' || o.status === 'Assigned').length + 85}
         isCollapsed={isSidebarCollapsed}
         onToggleCollapse={() => setIsSidebarCollapsed((prev) => !prev)}
