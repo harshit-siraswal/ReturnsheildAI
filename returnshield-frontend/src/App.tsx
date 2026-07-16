@@ -41,6 +41,7 @@ import {
 import { Dropdown } from './components/ui/Dropdown'
 import { MetricCard, ActionStack } from './components/dashboard'
 import { Login } from './pages/Login'
+import { CoPilot } from './pages/CoPilot'
 import { ToastProvider, useToast } from './lib/toast'
 import {
   orders as seedOrders,
@@ -67,6 +68,7 @@ type SortMode = 'Expected loss' | 'Risk score' | 'SLA urgency'
 
 const navHints: Record<string, string> = {
   Overview: 'Portfolio exposure, urgent alerts, and trends',
+  'AI Co-Pilot': 'Ask natural language questions about your business risk',
   'Risk queue': 'Sortable worklist of high-risk orders',
   Orders: 'Order-level predictions and decision history',
   Analytics: 'Category, region, and driver analysis',
@@ -441,6 +443,7 @@ function AppShell() {
         onToggleCollapse={() => setIsSidebarCollapsed((prev) => !prev)}
         navItems={[
           { label: 'Overview', icon: <House size={18} weight="light" />, hint: navHints.Overview },
+          { label: 'AI Co-Pilot', icon: <Sparkle size={18} weight="light" />, hint: navHints['AI Co-Pilot'] },
           { label: 'Risk queue', icon: <ListChecks size={18} weight="light" />, count: '93', hint: navHints['Risk queue'] },
           { label: 'Orders', icon: <Package size={18} weight="light" />, hint: navHints.Orders },
           { label: 'Analytics', icon: <ChartLineUp size={18} weight="light" />, hint: navHints.Analytics },
@@ -640,6 +643,17 @@ function AppShell() {
                 </CardContent>
               </Card>
             </section>
+          </>
+        )}
+
+        {activeNav === 'AI Co-Pilot' && (
+          <>
+            <PageHeading
+              eyebrow={<><Sparkle size={13} weight="light" /> Conversational Intelligence</>}
+              title="ReturnShield Co-Pilot."
+              description="Ask natural language questions about your business risk, order return drivers, and receive actionable recommendation playbooks."
+            />
+            <CoPilot orders={orders} />
           </>
         )}
 
