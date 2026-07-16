@@ -318,8 +318,8 @@
   /* center vertically in the remaining space above the preview */
   flex: 1;
   justify-content: center;
-  /* leave bottom room for the absolute preview (roughly 55% of viewport) */
-  padding-bottom: 45vh;
+  /* leave bottom room for the absolute preview */
+  padding-bottom: 28vh;
 }
 
 .landing-badge {

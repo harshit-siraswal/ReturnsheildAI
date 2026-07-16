@@ -22,22 +22,6 @@ export const DashboardPreview: React.FC = () => {
           </div>
         </div>
 
-        {/* Hero text */}
-        <div className="rs-preview-hero-text">
-          <div className="rs-preview-kicker">
-            <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#ef4d23"/></svg>
-            DECISION INTELLIGENCE
-          </div>
-          <div className="rs-preview-hero-title">Revenue under protection.</div>
-          <div className="rs-preview-hero-sub">
-            Live risk signals across your order flow. Focus the team where a small intervention can prevent the largest loss.
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
-            <div className="rs-preview-date-btn">1 – 30 July 2026 ▾</div>
-            <div className="rs-preview-export-btn">↓ Export</div>
-          </div>
-        </div>
-
         {/* Metric cards row */}
         <div className="rs-preview-metrics">
           <div className="rs-preview-metric-card">

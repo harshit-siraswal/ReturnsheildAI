@@ -87,12 +87,13 @@ function AppShell() {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setFirebaseUser(user)
       setAuthLoading(false)
-      // Auto-advance to dashboard whenever Firebase confirms a logged-in user
-      if (user) {
+      // If Firebase restores a session on page load, skip the landing page
+      if (user && !showDashboard) {
         setShowDashboard(true)
       }
     })
     return unsubscribe
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const [activeNav, setActiveNav] = useState('Overview')
@@ -272,6 +273,7 @@ function AppShell() {
     } catch (err) {
       console.error('Sign out error:', err)
     }
+    setShowDashboard(false)   // send back to landing
     setActiveNav('Overview')
     setIsDrawerOpen(false)
     setSettingsOpen(false)
@@ -295,12 +297,16 @@ function AppShell() {
     )
   }
 
+  // showDashboard=true but not yet authenticated → show login
+  // Once Firebase resolves the sign-in, firebaseUser will be set and
+  // this block will no longer match on the next render.
   if (!firebaseUser) {
     return (
       <Login
         onLogin={() => {
+          // onAuthStateChanged will fire immediately after this and set
+          // firebaseUser, triggering the re-render that shows the dashboard.
           pushToast({ title: 'Welcome back', body: `Signed in as ${auth.currentUser?.email || 'user'}.`, tone: 'success' })
-          setShowDashboard(true)
         }}
       />
     )
