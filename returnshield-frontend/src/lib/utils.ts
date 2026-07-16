@@ -1,5 +1,9 @@
 import type { Order } from './data'
 
+export function cn(...classes: Array<string | false | null | undefined>) {
+  return classes.filter(Boolean).join(' ')
+}
+
 export function chartPoints(values: number[], width = 672, height = 188) {
   const max = Math.max(...values)
   const min = Math.min(...values)

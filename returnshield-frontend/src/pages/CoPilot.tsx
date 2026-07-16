@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Sparkle, CircleNotch, PaperPlaneRight } from '@phosphor-icons/react'
 import type { Order } from '../lib/data'
 import { fetchGroqAPI } from '../lib/utils'
+import { ResponseStream } from '@/components/ui/response-stream'
 
 interface Message {
   id: string
@@ -130,7 +131,17 @@ export function CoPilot({ orders }: CoPilotProps) {
               {msg.role === 'assistant' ? 'AI' : 'Owner'}
             </div>
             <div className="message-content">
-              <p>{msg.content}</p>
+              {msg.role === 'assistant' ? (
+                <ResponseStream
+                  textStream={msg.content}
+                  mode="fade"
+                  speed={32}
+                  as="div"
+                  className="copilot-stream"
+                />
+              ) : (
+                <p>{msg.content}</p>
+              )}
             </div>
           </div>
         ))}
@@ -149,15 +160,15 @@ export function CoPilot({ orders }: CoPilotProps) {
       <div className="copilot-footer">
         {messages.length === 1 && (
           <div className="copilot-suggestions">
-              <small>Try one of these</small>
-              <div className="suggestions-grid">
-                {QUICK_QUESTIONS.map((q) => (
-                  <button key={q} type="button" onClick={() => handleSend(q)}>
-                    {q}
-                  </button>
-                ))}
-              </div>
+            <small>Try one of these</small>
+            <div className="suggestions-grid">
+              {QUICK_QUESTIONS.map((q) => (
+                <button key={q} type="button" onClick={() => handleSend(q)}>
+                  {q}
+                </button>
+              ))}
             </div>
+          </div>
         )}
 
         <form
