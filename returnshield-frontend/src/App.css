@@ -1151,14 +1151,19 @@
   border-color: rgba(255, 255, 255, 0.15);
 }
 
-.app-shell.is-collapsed {
-  grid-template-columns: 78px minmax(0, 1fr) !important;
-}
+/* Collapsed sidebar only applies on tablet/desktop widths. The !important is
+   needed to beat the base .app-shell grid, but must not fight the mobile
+   off-canvas layout at <=890px. */
+@media (min-width: 891px) {
+  .app-shell.is-collapsed {
+    grid-template-columns: 78px minmax(0, 1fr) !important;
+  }
 
-.sidebar.is-collapsed {
-  width: 62px !important;
-  padding: 18px 8px 12px !important;
-  align-items: center !important;
+  .sidebar.is-collapsed {
+    width: 62px !important;
+    padding: 18px 8px 12px !important;
+    align-items: center !important;
+  }
 }
 
 .sidebar.is-collapsed .sidebar-header {
@@ -1451,6 +1456,131 @@
   line-height: 1.4;
 }
 
+/* Typography & Legibility Enhancement Block
+   Must appear BEFORE the responsive @media blocks below so that the
+   media-query rules (same specificity) win via source-order on mobile. */
+body {
+  font-size: 15.5px;
+}
+.brand {
+  font-size: 18px;
+}
+.card-header h2, .section-heading h2, .drawer-heading h2 {
+  font-size: 20px;
+}
+.chart-summary strong {
+  font-size: 34px;
+}
+.chart-summary span {
+  font-size: 13px;
+}
+.chart-annotation span {
+  font-size: 13.5px;
+}
+.metric-label {
+  font-size: 13px;
+}
+.metric-value {
+  font-size: 42px;
+  line-height: 1.1;
+}
+.metric-foot {
+  font-size: 12.5px;
+}
+.section-kicker {
+  font-size: 12px;
+}
+.nav-item {
+  font-size: 15px;
+  min-height: 42px;
+}
+.nav-item em {
+  font-size: 11px;
+}
+.crumbs {
+  font-size: 14px;
+}
+.search-field input {
+  font-size: 14px;
+}
+.search-field kbd {
+  font-size: 10px;
+}
+.eyebrow {
+  font-size: 11px;
+}
+.region-list span, .region-row {
+  font-size: 13px;
+}
+.region-list b, .region-row b {
+  font-size: 10px;
+}
+.region-list strong, .region-row strong {
+  font-size: 13px;
+}
+th {
+  font-size: 11px;
+  font-weight: 600;
+}
+td {
+  font-size: 13px;
+}
+td strong {
+  font-size: 13.5px;
+}
+td small {
+  font-size: 12px;
+  max-width: 190px;
+}
+.priority {
+  font-size: 10px;
+}
+.reason-chip, .action-chip {
+  font-size: 11.5px;
+}
+.drawer-metrics small, .drawer-metrics span {
+  font-size: 11.5px;
+}
+.drawer-metrics strong {
+  font-size: 26px;
+}
+.factor-index {
+  font-size: 11px;
+}
+.factor-card strong {
+  font-size: 13.5px;
+}
+.factor-card small {
+  font-size: 12px;
+}
+.factor-card b {
+  font-size: 12px;
+}
+.recommended-caption {
+  font-size: 11px;
+}
+.recommended-panel p {
+  font-size: 12.5px;
+}
+.secondary-action {
+  font-size: 12px;
+}
+.audit-line {
+  font-size: 11px;
+}
+.portfolio-pulse {
+  font-size: 13px;
+}
+.help-link {
+  font-size: 13.5px;
+}
+.workspace-switcher small, .analyst-card small {
+  font-size: 11.5px;
+}
+.workspace-switcher strong, .analyst-card strong {
+  font-size: 13.5px;
+}
+
 @media (max-width: 890px) {
   .login-frame {
     grid-template-columns: 1fr;
@@ -1474,130 +1604,62 @@
 @media (max-width: 890px) { .app-shell { grid-template-columns: 1fr; }.sidebar { position: fixed; left: 12px; top: 12px; bottom: 12px; height: auto; width: min(88vw, 300px); margin: 0; transform: translateX(calc(-100% - 24px)); opacity: 0; pointer-events: none; z-index: 30; }.app-shell.is-mobile-menu-open .sidebar { transform: translateX(0); opacity: 1; pointer-events: auto; }.mobile-menu-backdrop { display: block; position: fixed; inset: 0; z-index: 20; border: 0; background: rgba(0, 0, 0, 0.48); backdrop-filter: blur(2px); }.workspace { padding: 13px 16px 30px; }.mobile-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 44px; }.mobile-bar .brand { flex: 1; justify-content: flex-start; }.topbar { display: flex; flex-direction: column; align-items: stretch; gap: 10px; padding-top: 12px; }.crumbs { width: 100%; justify-content: flex-start; flex-wrap: wrap; }.top-actions { width: 100%; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }.search-field { width: 100%; flex: 1 1 100%; }.notification-wrap { margin-left: auto; }.page-heading { padding: 36px 2px 27px; align-items: start; flex-direction: column; }.heading-actions { width: 100%; flex-wrap: wrap; }.date-button { flex: 1; }.dashboard-grid, .insight-grid { grid-template-columns: 1fr; }.trend-card, .action-card { min-height: auto; }.insights-card { min-height: auto; }.queue-section { margin-top: 33px; }.section-heading { align-items: start; flex-direction: column; }.queue-actions { width: 100%; }.review-button { margin-left: auto; }.drawer-layer { align-items: end; }.order-drawer { width: 100%; min-height: auto; max-height: 94dvh; border-top: 1px solid rgba(207,230,242,0.12); border-left: 0; border-radius: 24px 24px 0 0; animation-name: sheet-in; }.composer-modal { width: 100%; max-height: 94dvh; border-radius: 22px 22px 0 0; margin-top: auto; }.composer-grid { grid-template-columns: 1fr; }.composer-fields-order, .composer-fields-ai { grid-template-columns: 1fr 1fr; }.composer-preview { position: static; }.composer-actions { flex-direction: row; flex-wrap: wrap; }.composer-actions .date-button, .composer-actions .export-button { width: auto; flex: 1 1 190px; } }
 @media (max-width: 580px) { .workspace { padding-inline: 12px; }.mobile-bar { gap: 8px; }.page-heading h1 { font-size: 36px; }.page-heading p { font-size: 12px; }.heading-actions { gap: 8px; }.export-button { width: 37px; padding: 0; font-size: 0; }.metric-grid { gap: 8px; }.metric-card .card-core { padding: 14px; }.metric-card { min-height: 120px; border-radius: 17px; }.metric-value { margin: 15px 0 7px; font-size: 21px; }.metric-foot { display: block; line-height: 1.4; }.metric-foot span { display: block; }.trend-card .card-core, .action-card .card-core, .insights-card .card-core { padding: 17px; }.bezel { border-radius: 18px; }.card-core { border-radius: 16px; }.chart-summary { margin-top: 21px; }.chart-summary strong { font-size: 22px; }.chart-summary span { font-size: 8px; }.chart-axis { font-size: 7px; }.queue-actions { flex-wrap: wrap; }.review-button { margin-left: 0; }.filter-button { flex: 1; }.review-button { flex: 1; justify-content: space-between; }.drawer-metrics { grid-template-columns: 1fr; }.drawer-metrics > div + div { border-top: 1px solid rgba(207,230,242,0.08); border-left: 0; }.factor-card small { max-width: 220px; }.composer-modal { padding: 16px; border-radius: 20px 20px 0 0; }.composer-grid { gap: 12px; }.composer-fields-order, .composer-fields-ai { grid-template-columns: 1fr; }.composer-panel, .composer-preview-card { padding: 14px; border-radius: 18px; }.composer-preview-metrics { grid-template-columns: 1fr; }.composer-actions .date-button, .composer-actions .export-button { width: 100%; flex: 1 1 100%; }.mobile-menu-button { width: 40px; height: 40px; }.mobile-bar .brand { min-width: 0; } }
 @keyframes sheet-in { from { opacity: 0; transform: translateY(42px); } to { opacity: 1; transform: translateY(0); } }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; } }
 
-/* Typography & Legibility Enhancement Override Block */
-body {
-  font-size: 15.5px !important;
+/* =========================================================================
+   Responsive enhancement block
+   Fills gaps the breakpoints above did not cover, and now actually takes
+   effect because the trailing !important typography rules were removed.
+   ========================================================================= */
+
+/* Tablet: collapse the 4-up model-facts grid to 2 columns. */
+@media (max-width: 890px) {
+  .model-facts {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  /* Filters dropdown: stop hugging the right edge; span the toolbar width. */
+  .filters-panel {
+    right: -8px;
+    width: min(320px, calc(100vw - 32px));
+  }
 }
-.brand {
-  font-size: 18px !important;
+
+/* Phone: metric cards drop to a single readable column, model-facts to 1 col. */
+@media (max-width: 580px) {
+  .metric-grid {
+    grid-template-columns: 1fr;
+  }
+  .model-facts {
+    grid-template-columns: 1fr;
+  }
+  /* The filters panel was anchored right and overflowed narrow screens. */
+  .filters-panel {
+    right: 0;
+    width: calc(100vw - 32px);
+    max-width: 340px;
+  }
+  /* Drawer action chips (Duplicate / Edit / Assign / Snooze) wrap on phones. */
+  .drawer-actions {
+    flex-wrap: wrap;
+  }
+  .drawer-chip {
+    flex: 1 1 calc(50% - 6px);
+  }
 }
-.card-header h2, .section-heading h2, .drawer-heading h2 {
-  font-size: 20px !important;
+
+/* Queue table horizontal scroll: visible track + momentum scrolling on iOS. */
+.queue-table-wrap {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
 }
-.chart-summary strong {
-  font-size: 34px !important;
+.queue-table-wrap::-webkit-scrollbar {
+  height: 8px;
 }
-.chart-summary span {
-  font-size: 13px !important;
+.queue-table-wrap::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border-radius: 8px;
 }
-.chart-annotation span {
-  font-size: 13.5px !important;
-}
-.metric-label {
-  font-size: 13px !important;
-}
-.metric-value {
-  font-size: 42px !important;
-  line-height: 1.1 !important;
-}
-.metric-foot {
-  font-size: 12.5px !important;
-}
-.section-kicker {
-  font-size: 12px !important;
-}
-.nav-item {
-  font-size: 15px !important;
-  min-height: 42px !important;
-}
-.nav-item em {
-  font-size: 11px !important;
-}
-.crumbs {
-  font-size: 14px !important;
-}
-.search-field input {
-  font-size: 14px !important;
-}
-.search-field kbd {
-  font-size: 10px !important;
-}
-.eyebrow {
-  font-size: 11px !important;
-}
-.region-list span, .region-row {
-  font-size: 13px !important;
-}
-.region-list b, .region-row b {
-  font-size: 10px !important;
-}
-.region-list strong, .region-row strong {
-  font-size: 13px !important;
-}
-th {
-  font-size: 11px !important;
-  font-weight: 600 !important;
-}
-td {
-  font-size: 13px !important;
-}
-td strong {
-  font-size: 13.5px !important;
-}
-td small {
-  font-size: 12px !important;
-  max-width: 190px !important;
-}
-.priority {
-  font-size: 10px !important;
-}
-.reason-chip, .action-chip {
-  font-size: 11.5px !important;
-}
-.drawer-metrics small, .drawer-metrics span {
-  font-size: 11.5px !important;
-}
-.drawer-metrics strong {
-  font-size: 26px !important;
-}
-.factor-index {
-  font-size: 11px !important;
-}
-.factor-card strong {
-  font-size: 13.5px !important;
-}
-.factor-card small {
-  font-size: 12px !important;
-}
-.factor-card b {
-  font-size: 12px !important;
-}
-.recommended-caption {
-  font-size: 11px !important;
-}
-.recommended-panel p {
-  font-size: 12.5px !important;
-}
-.secondary-action {
-  font-size: 12px !important;
-}
-.audit-line {
-  font-size: 11px !important;
-}
-.portfolio-pulse {
-  font-size: 13px !important;
-}
-.help-link {
-  font-size: 13.5px !important;
-}
-.workspace-switcher small, .analyst-card small {
-  font-size: 11.5px !important;
-}
-.workspace-switcher strong, .analyst-card strong {
-  font-size: 13.5px !important;
-}
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; } }
 
 /* Custom Dropdown, Notifications Popover, and Drawer Chips Styles */
 
@@ -2051,7 +2113,7 @@ td small {
   border: 0;
   background: transparent;
   color: var(--muted);
-  font-size: 13px !important;
+  font-size: 13px;
   font-weight: 500;
   border-radius: 6px;
   cursor: pointer;
@@ -2083,7 +2145,7 @@ td small {
   border: 1px solid var(--line);
   border-radius: 8px;
   color: var(--ink);
-  font-size: 13px !important;
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   transition: all 150ms var(--curve);
@@ -2103,7 +2165,7 @@ td small {
   border: 1px solid var(--line);
   border-radius: 8px;
   color: var(--muted);
-  font-size: 13px !important;
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   transition: all 150ms var(--curve);
@@ -2154,7 +2216,7 @@ td small {
   border: 1px solid var(--button-secondary-border);
   border-radius: 8px;
   color: var(--button-secondary-fg);
-  font-size: 13.5px !important;
+  font-size: 13.5px;
   font-weight: 550;
   cursor: pointer;
   transition: all 180ms var(--curve);
