@@ -17,13 +17,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onLoginClick }) => {
       <svg viewBox="0 0 32 32" width="28" height="28" fill="none">
         {/* Shield */}
         <path d="M16 3L5 7.5V15c0 5.8 4.7 10.5 11 13 6.3-2.5 11-7.2 11-13V7.5L16 3z"
-              fill="#ef4d23" opacity="0.15"/>
+              fill="#4ccdc4" opacity="0.15"/>
         <path d="M16 3L5 7.5V15c0 5.8 4.7 10.5 11 13 6.3-2.5 11-7.2 11-13V7.5L16 3z"
-              stroke="#ef4d23" strokeWidth="1.5" fill="none"/>
+              stroke="#4ccdc4" strokeWidth="1.5" fill="none"/>
         {/* Bar chart inside */}
-        <rect x="10" y="17" width="3" height="5" rx="0.8" fill="#ef4d23"/>
-        <rect x="14.5" y="13" width="3" height="9" rx="0.8" fill="#ef4d23"/>
-        <rect x="19" y="15" width="3" height="7" rx="0.8" fill="#ef4d23" opacity="0.7"/>
+        <rect x="10" y="17" width="3" height="5" rx="0.8" fill="#4ccdc4"/>
+        <rect x="14.5" y="13" width="3" height="9" rx="0.8" fill="#4ccdc4"/>
+        <rect x="19" y="15" width="3" height="7" rx="0.8" fill="#4ccdc4" opacity="0.7"/>
       </svg>
       <span style={{ fontWeight: 700, fontSize: '15px', color: '#0b0f1a', letterSpacing: '-0.01em', fontFamily: 'Inter, sans-serif' }}>
         ReturnShield
