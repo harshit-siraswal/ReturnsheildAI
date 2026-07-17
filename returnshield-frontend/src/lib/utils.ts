@@ -1,4 +1,5 @@
 import type { Order } from './data'
+import { scoreCustomDraft, type CustomOrderDraft, type PaymentMethod, type ShippingMethod, type CustomerType } from './orderScoring'
 
 export function cn(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(' ')
@@ -95,6 +96,56 @@ export function parseOrdersCSV(csvText: string): Order[] {
 
   const columnIndex = (label: string) => headers.indexOf(label.toLowerCase())
   const getCell = (row: string[], label: string) => row[columnIndex(label)] ?? ''
+
+  const isRawDatabase = headers.includes('order_id')
+
+  if (isRawDatabase) {
+    return rows
+      .map((row) => {
+        const orderId = getCell(row, 'order_id')
+        if (!orderId) return null
+
+        const category = getCell(row, 'product_category') || 'Electronics'
+        const paymentMethod = (getCell(row, 'payment_method') || 'Credit Card') as PaymentMethod
+        const shippingMethod = (getCell(row, 'shipping_method') || 'Standard') as ShippingMethod
+        const customerType = (getCell(row, 'customer_type') || 'New') as CustomerType
+        const userLocation = getCell(row, 'user_location') || 'Unknown'
+        const productPrice = getCell(row, 'product_price') || '0'
+        const orderQuantity = getCell(row, 'order_quantity') || '1'
+        const userAge = getCell(row, 'user_age') || '0'
+        const userGender = getCell(row, 'user_gender') || 'Male'
+        const discountApplied = getCell(row, 'discount_applied') || '0'
+        const sellerRating = getCell(row, 'seller_rating') || '4.0'
+        const productRating = getCell(row, 'product_rating') || '4.0'
+        const previousReturns = getCell(row, 'previous_returns') || '0'
+        const productReviewCount = getCell(row, 'product_review_count') || '0'
+        const orderValue = getCell(row, 'order_value') || '0'
+
+        const draft: CustomOrderDraft = {
+          orderId,
+          customerName: `${customerType} customer · ${userLocation}`,
+          productName: `${category} item`,
+          productCategory: category,
+          productPrice,
+          orderQuantity,
+          userAge,
+          userGender,
+          userLocation,
+          paymentMethod,
+          shippingMethod,
+          discountApplied,
+          sellerRating,
+          productRating,
+          previousReturns,
+          customerType,
+          productReviewCount,
+          orderValue,
+        }
+
+        return scoreCustomDraft(draft)
+      })
+      .filter((order): order is Order => !!order)
+  }
 
   return rows
     .map((row) => {
