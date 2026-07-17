@@ -20,9 +20,9 @@ interface Action {
 const actions: Action[] = [
   {
     icon: <ShieldCheck size={20} weight="light" />,
-    title: 'Verify 14 COD orders',
+    title: 'Verify 14 Gift Card orders',
     subtitle: 'Save an estimated INR 68,400',
-    hint: 'Opens the risk queue filtered to COD orders awaiting OTP verification',
+    hint: 'Opens the risk queue filtered to Gift Card orders awaiting payment verification',
     isPrimary: true,
   },
   {

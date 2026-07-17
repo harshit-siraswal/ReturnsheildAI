@@ -48,7 +48,6 @@ import { CoPilot } from './pages/CoPilot'
 import { ConvixLandingPage } from './app/App'
 import { ToastProvider, useToast } from './lib/toast'
 import {
-  orders as seedOrders,
   regions,
   dateRanges,
   trendWindows,
@@ -60,6 +59,7 @@ import {
   type Notification,
   type Policy,
 } from './lib/data'
+import { seedOrders } from './lib/dataset'
 import { chartPoints, downloadOrdersCSV, getGroqExplanation, parseOrdersCSV } from './lib/utils'
 import { createBlankDraft, draftFromOrder, loadStoredOrders, saveOrdersToStorage, scoreCustomDraft, type CustomOrderDraft } from './lib/orderScoring'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
@@ -68,7 +68,7 @@ import { auth } from './lib/firebase'
 
 
 type PriorityFilter = 'All' | 'P0' | 'P1' | 'P2'
-type PaymentFilter = 'All' | 'COD' | 'UPI' | 'Card'
+type PaymentFilter = 'All' | 'Credit Card' | 'Debit Card' | 'Gift Card' | 'PayPal'
 type SortMode = 'Expected loss' | 'Risk score' | 'SLA urgency'
 type AppView = 'landing' | 'login' | 'dashboard'
 
@@ -559,7 +559,7 @@ function AppShell() {
             <div className="filters-group">
               <small>Payment</small>
               <div className="filters-options">
-                {(['All', 'COD', 'UPI', 'Card'] as PaymentFilter[]).map((option) => (
+                {(['All', 'Credit Card', 'Debit Card', 'Gift Card', 'PayPal'] as PaymentFilter[]).map((option) => (
                   <button
                     key={option}
                     type="button"
@@ -659,7 +659,7 @@ function AppShell() {
           onNotificationOpen={(notification) => {
             setNotifications((current) => current.map((n) => (n.id === notification.id ? { ...n, unread: false } : n)))
             if (notification.id === 1) {
-              const target = orders.find((o) => o.id === '#RS-18492')
+              const target = orders.find((o) => o.id === 'ORD100429')
               if (target) openOrder(target)
             } else {
               setActiveNav(notification.id === 2 ? 'Model health' : 'Policies')
@@ -779,7 +779,7 @@ function AppShell() {
                       <CardTitle>Why returns are rising</CardTitle>
                     </div>
                     <Dropdown
-                      options={['High-risk cohort', 'All orders', 'COD only', 'Fragile SKUs']}
+                      options={['High-risk cohort', 'All orders', 'Gift Card only', 'Fragile SKUs']}
                       value={driverCohort}
                       onSelect={(cohort) => {
                         setDriverCohort(cohort)
@@ -795,7 +795,7 @@ function AppShell() {
                   <div className="driver-list">
                     <Driver label="Previous customer returns" value="36%" width="86%" tone="teal" />
                     <Driver label="Delivery delay over 2 days" value="28%" width="67%" tone="amber" />
-                    <Driver label="COD payment method" value="21%" width="51%" tone="blue" />
+                    <Driver label="Gift Card payment method" value="21%" width="51%" tone="blue" />
                     <Driver label="Fragile product category" value="15%" width="36%" tone="slate" />
                   </div>
                   <p className="source-note">Based on local explanations across 1,248 high-risk orders.</p>
@@ -904,7 +904,7 @@ function AppShell() {
                   <div className="driver-list">
                     <Driver label="Previous customer returns" value="36%" width="86%" tone="teal" />
                     <Driver label="Delivery delay over 2 days" value="28%" width="67%" tone="amber" />
-                    <Driver label="COD payment method" value="21%" width="51%" tone="blue" />
+                    <Driver label="Gift Card payment method" value="21%" width="51%" tone="blue" />
                     <Driver label="Fragile product category" value="15%" width="36%" tone="slate" />
                   </div>
                   <p className="source-note">Drivers name source fields and direction — raw SHAP values stay behind the scenes.</p>
@@ -1096,7 +1096,7 @@ function AppShell() {
                 </button>
               </div>
               <div className="factor-card"><span className="factor-index">01</span><div><strong>{selectedOrder.driver}</strong><small>Strongest contributor to this order's return probability.</small></div><b>+24 pts</b></div>
-              <div className="factor-card"><span className="factor-index">02</span><div><strong>{selectedOrder.payment === 'COD' ? 'Cash on Delivery' : `${selectedOrder.payment} chargeback pattern`}</strong><small>High-risk payment pattern for this category.</small></div><b>+17 pts</b></div>
+              <div className="factor-card"><span className="factor-index">02</span><div><strong>{selectedOrder.payment === 'Gift Card' ? 'Gift Card payment risk' : `${selectedOrder.payment} payment pattern`}</strong><small>{selectedOrder.payment === 'Gift Card' ? 'Elevated abuse signal for this payment method.' : 'Payment pattern within normal range for this category.'}</small></div><b>+17 pts</b></div>
               <div className="factor-card"><span className="factor-index">03</span><div><strong>Delivery promise changed</strong><small>ETA has moved by more than 24 hours.</small></div><b>+12 pts</b></div>
             </section>
 
@@ -1197,6 +1197,7 @@ function AppShell() {
         onChange={updateComposerDraft}
         onSubmit={saveComposerOrder}
         onReset={() => setComposerDraft(createBlankDraft())}
+        onApplyDraft={(next) => setComposerDraft(next)}
       />
 
       <input

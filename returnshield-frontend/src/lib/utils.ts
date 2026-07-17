@@ -121,7 +121,7 @@ export function parseOrdersCSV(csvText: string): Order[] {
         alternatives: [] as string[],
         priority: priority || 'P2',
         status: status || 'New',
-        payment: payment || 'COD',
+        payment: payment || 'Credit Card',
         region: getCell(row, 'Region'),
         slaHours: Number.isFinite(slaHours) ? slaHours : 24,
       } satisfies Order

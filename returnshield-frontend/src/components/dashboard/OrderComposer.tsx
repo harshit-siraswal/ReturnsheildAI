@@ -1,9 +1,10 @@
 import React from 'react'
-import { X, Sparkle, ArrowUpRight, ShieldCheck } from '@phosphor-icons/react'
+import { X, Sparkle, ArrowUpRight, ShieldCheck, MagnifyingGlass } from '@phosphor-icons/react'
 import { Button } from '../ui/Button'
 import { Badge } from '../ui/Badge'
 import type { Order } from '../../lib/data'
 import type { CustomOrderDraft } from '../../lib/orderScoring'
+import { fetchDatasetOrder, datasetRowToDraft } from '../../lib/dataset'
 
 interface OrderComposerProps {
   open: boolean
@@ -14,13 +15,14 @@ interface OrderComposerProps {
   onChange: <K extends keyof CustomOrderDraft>(field: K, value: CustomOrderDraft[K]) => void
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void
   onReset: () => void
+  onApplyDraft: (draft: CustomOrderDraft) => void
 }
 
-const paymentOptions: Array<CustomOrderDraft['paymentMethod']> = ['COD', 'UPI', 'Card']
-const shippingOptions: Array<CustomOrderDraft['shippingMethod']> = ['Express', 'Standard', 'Economy']
-const customerOptions: Array<CustomOrderDraft['customerType']> = ['New', 'Returning']
-const genderOptions = ['Male', 'Female', 'Non-binary', 'Prefer not to say']
-const categoryOptions = ['Electronics', 'Fashion', 'Home essentials', 'Kitchen', 'Footwear', 'Travel', 'Beauty', 'Sports']
+const paymentOptions: Array<CustomOrderDraft['paymentMethod']> = ['Credit Card', 'Debit Card', 'Gift Card', 'PayPal']
+const shippingOptions: Array<CustomOrderDraft['shippingMethod']> = ['Express', 'Next-Day', 'Standard']
+const customerOptions: Array<CustomOrderDraft['customerType']> = ['New', 'Regular', 'Frequent', 'Loyal']
+const genderOptions = ['Male', 'Female']
+const categoryOptions = ['Books', 'Clothing', 'Electronics', 'Home', 'Toys']
 
 function ComposerField({
   label,
@@ -42,7 +44,27 @@ function ComposerField({
   )
 }
 
-export function OrderComposer({ open, mode, draft, preview, onClose, onChange, onSubmit, onReset }: OrderComposerProps) {
+export function OrderComposer({ open, mode, draft, preview, onClose, onChange, onSubmit, onReset, onApplyDraft }: OrderComposerProps) {
+  const [lookupId, setLookupId] = React.useState('')
+  const [lookupState, setLookupState] = React.useState<'idle' | 'loading' | 'found' | 'missing' | 'error'>('idle')
+
+  const runLookup = React.useCallback(async () => {
+    const query = lookupId.trim()
+    if (!query) return
+    setLookupState('loading')
+    try {
+      const row = await fetchDatasetOrder(query)
+      if (row) {
+        onApplyDraft(datasetRowToDraft(row))
+        setLookupState('found')
+      } else {
+        setLookupState('missing')
+      }
+    } catch {
+      setLookupState('error')
+    }
+  }, [lookupId, onApplyDraft])
+
   if (!open) return null
 
   return (
@@ -60,6 +82,28 @@ export function OrderComposer({ open, mode, draft, preview, onClose, onChange, o
         </div>
 
         <form className="composer-grid" onSubmit={onSubmit}>
+          <section className="composer-panel composer-lookup">
+            <div className="composer-section-head">
+              <span>Order ID lookup</span>
+              <small>Fetch a real order from the bundled dataset</small>
+            </div>
+            <div className="composer-lookup-row">
+              <input
+                value={lookupId}
+                onChange={(event) => { setLookupId(event.target.value); setLookupState('idle') }}
+                onKeyDown={(event) => { if (event.key === 'Enter') { event.preventDefault(); void runLookup() } }}
+                placeholder="ORD100001"
+                aria-label="Order ID to fetch"
+              />
+              <Button variant="secondary" size="md" type="button" onClick={() => void runLookup()} disabled={lookupState === 'loading'}>
+                <MagnifyingGlass size={15} weight="light" /> {lookupState === 'loading' ? 'Fetching…' : 'Fetch'}
+              </Button>
+            </div>
+            {lookupState === 'found' && <small className="composer-lookup-status is-found">Order found — all fields prefilled. Edit anything, then score.</small>}
+            {lookupState === 'missing' && <small className="composer-lookup-status is-missing">No order with that ID in the dataset (ORD100001–ORD110000).</small>}
+            {lookupState === 'error' && <small className="composer-lookup-status is-missing">Could not load the dataset. Check the connection and retry.</small>}
+          </section>
+
           <section className="composer-panel">
             <div className="composer-section-head">
               <span>Order details</span>
@@ -67,7 +111,7 @@ export function OrderComposer({ open, mode, draft, preview, onClose, onChange, o
             </div>
             <div className="composer-fields composer-fields-order">
               <ComposerField label="Order ID" hint="Used in the queue">
-                <input value={draft.orderId} onChange={(event) => onChange('orderId', event.target.value)} placeholder="#RS-20001" />
+                <input value={draft.orderId} onChange={(event) => onChange('orderId', event.target.value)} placeholder="ORD100429" />
               </ComposerField>
               <ComposerField label="Customer name">
                 <input value={draft.customerName} onChange={(event) => onChange('customerName', event.target.value)} placeholder="Aarav Mehta" />
@@ -108,7 +152,7 @@ export function OrderComposer({ open, mode, draft, preview, onClose, onChange, o
                 </select>
               </ComposerField>
               <ComposerField label="User location">
-                <input value={draft.userLocation} onChange={(event) => onChange('userLocation', event.target.value)} placeholder="Delhi" />
+                <input value={draft.userLocation} onChange={(event) => onChange('userLocation', event.target.value)} placeholder="City54" />
               </ComposerField>
               <ComposerField label="Payment method">
                 <select value={draft.paymentMethod} onChange={(event) => onChange('paymentMethod', event.target.value as CustomOrderDraft['paymentMethod'])}>

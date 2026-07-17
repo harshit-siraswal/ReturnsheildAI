@@ -1328,6 +1328,48 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.composer-lookup {
+  grid-column: 1 / -1;
+}
+
+.composer-lookup-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.composer-lookup-row input {
+  flex: 1 1 220px;
+  min-width: 0;
+  padding: 11px 13px;
+  border-radius: 11px;
+  border: 1px solid var(--line-strong, rgba(207,230,242,0.18));
+  background: rgba(255,255,255,0.02);
+  color: var(--ink);
+  font-size: 13.5px;
+  letter-spacing: 0.04em;
+}
+
+.composer-lookup-row input::placeholder {
+  color: var(--muted);
+  letter-spacing: 0.06em;
+}
+
+.composer-lookup-status {
+  display: block;
+  margin-top: 8px;
+  font-size: 11.5px;
+}
+
+.composer-lookup-status.is-found {
+  color: #5cd6a8;
+}
+
+.composer-lookup-status.is-missing {
+  color: #f0a968;
+}
+
 .composer-field {
   display: grid;
   gap: 7px;
