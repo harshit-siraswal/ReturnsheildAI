@@ -182,13 +182,19 @@ function AppShell() {
   const [importingOrders, setImportingOrders] = useState(false)
   const importInputRef = useRef<HTMLInputElement>(null)
 
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 20
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [priorityFilter, paymentFilter, searchQuery, sortMode, activeNav])
+
   const selectedOrder = orders.find((order) => order.id === selectedOrderId) ?? null
   const composerPreview = useMemo(() => scoreCustomDraft(composerDraft), [composerDraft])
 
   useEffect(() => {
     saveOrdersToStorage(orders)
   }, [orders])
-
   // Scroll lock while any overlay is open
   useEffect(() => {
     const locked = isDrawerOpen || settingsOpen || mobileMenuOpen || composerOpen
@@ -211,7 +217,6 @@ function AppShell() {
     return () => document.removeEventListener('keydown', onKey)
   }, [])
 
-  const points = useMemo(() => chartPoints(trendWindows[trendWindow]), [trendWindow])
 
   const filteredOrders = useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
@@ -231,9 +236,68 @@ function AppShell() {
     })
     return list
   }, [orders, searchQuery, priorityFilter, paymentFilter, sortMode])
-
   const activeFilterCount = (priorityFilter !== 'All' ? 1 : 0) + (paymentFilter !== 'All' ? 1 : 0) + (searchQuery.trim() ? 1 : 0)
 
+  const displayedOrders = useMemo(() => {
+    if (activeNav === 'Overview') {
+      return filteredOrders.slice(0, 10)
+    }
+    const startIndex = (currentPage - 1) * itemsPerPage
+    return filteredOrders.slice(startIndex, startIndex + itemsPerPage)
+  }, [filteredOrders, activeNav, currentPage])
+
+  // Dynamic metrics computed from orders list
+  const metrics = useMemo(() => {
+    const totalOrders = orders.length || 1
+    const totalLossValue = orders.reduce((sum, o) => sum + o.lossValue, 0)
+    const criticalCount = orders.filter((o) => o.priority === 'P0').length
+    const criticalNewCount = orders.filter((o) => o.priority === 'P0' && o.status === 'New').length
+
+    const avgRisk = orders.reduce((sum, o) => sum + o.risk, 0) / totalOrders
+    const returnRate = (avgRisk * 0.3).toFixed(1) + '%'
+    const returnDelta = (avgRisk * 0.05).toFixed(1) + ' pts'
+
+    const totalPrevented = orders
+      .filter((o) => o.status === 'Actioned' || o.status === 'Resolved')
+      .reduce((sum, o) => sum + o.lossValue, 0)
+    const preventedCount = orders.filter((o) => o.status === 'Actioned' || o.status === 'Resolved').length
+
+    // Delta for at-risk (e.g. percentage of high risk items)
+    const atRiskDelta = ((orders.filter((o) => o.risk >= 75).length / totalOrders) * 100).toFixed(1) + '%'
+
+    return {
+      atRisk: formatINR(totalLossValue),
+      atRiskDelta,
+      critical: String(criticalCount),
+      criticalDelta: `${criticalNewCount} new today`,
+      returnRate,
+      returnDelta,
+      prevented: formatINR(totalPrevented),
+      preventedDelta: `${preventedCount} actions`,
+    }
+  }, [orders])
+
+  const dynamicTrend = useMemo(() => {
+    const numPoints = trendWindow === 'Last 6 weeks' ? 6 : trendWindow === 'Last 4 quarters' ? 4 : 12
+    if (orders.length < 50) {
+      const baseTrend = trendWindow === 'Last 6 weeks' ? [48, 45, 61, 57, 70, 81] : trendWindow === 'Last 4 quarters' ? [52, 61, 58, 81] : [39, 35, 42, 37, 48, 54, 45, 61, 57, 70, 67, 81]
+      const seedTotal = seedOrders.reduce((sum, o) => sum + o.lossValue, 0) || 1
+      const currentTotal = orders.reduce((sum, o) => sum + o.lossValue, 0)
+      const ratio = currentTotal / seedTotal
+      return baseTrend.map((v) => Math.round(v * ratio * 100))
+    }
+
+    const sorted = [...orders].sort((a, b) => a.id.localeCompare(b.id))
+    const binSize = Math.floor(sorted.length / numPoints)
+    return Array.from({ length: numPoints }, (_, i) => {
+      const start = i * binSize
+      const end = i === numPoints - 1 ? sorted.length : (i + 1) * binSize
+      const chunk = sorted.slice(start, end)
+      return chunk.reduce((sum, o) => sum + o.lossValue, 0)
+    })
+  }, [orders, trendWindow])
+
+  const points = useMemo(() => chartPoints(dynamicTrend), [dynamicTrend])
   const openOrder = (order: Order) => {
     setSelectedOrderId(order.id)
     setShowAlternatives(false)
@@ -433,7 +497,6 @@ function AppShell() {
     setPaymentFilter('All')
     setSearchQuery('')
   }
-
   const queueTable = (
     <Card className="queue-bezel">
       <CardContent className="no-pad">
@@ -461,7 +524,7 @@ function AppShell() {
           />
         </div>
         <div className="queue-table-wrap">
-          {filteredOrders.length === 0 ? (
+          {displayedOrders.length === 0 ? (
             <div className="queue-empty">
               <ShieldCheck size={26} weight="light" />
               <strong>No orders match these filters</strong>
@@ -476,7 +539,7 @@ function AppShell() {
                 </tr>
               </thead>
               <tbody>
-                {filteredOrders.map((order) => (
+                {displayedOrders.map((order) => (
                   <tr key={order.id} onClick={() => openOrder(order)}>
                     <td>
                       <Badge
@@ -517,10 +580,57 @@ function AppShell() {
             </table>
           )}
         </div>
-        {activeNav === 'Overview' && filteredOrders.length > 0 && (
+        {activeNav === 'Overview' && filteredOrders.length > 10 && (
           <button className="queue-footer" type="button" onClick={() => goToQueue()} title="Open the dedicated risk queue workbench">
-            Open full risk queue <ArrowUpRight size={16} weight="light" />
+            View all {filteredOrders.length} orders <ArrowUpRight size={16} weight="light" />
           </button>
+        )}
+        {activeNav !== 'Overview' && (
+          <div className="pagination-footer">
+            <span>
+              {filteredOrders.length === 0
+                ? 'Showing 0 entries'
+                : `Showing ${(currentPage - 1) * itemsPerPage + 1} - ${Math.min(currentPage * itemsPerPage, filteredOrders.length)} of ${filteredOrders.length} entries`
+              }
+            </span>
+            <div className="pagination-buttons">
+              <button
+                type="button"
+                className="pagination-button"
+                onClick={() => setCurrentPage(1)}
+                disabled={currentPage === 1}
+              >
+                First
+              </button>
+              <button
+                type="button"
+                className="pagination-button"
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              <span style={{ display: 'inline-flex', alignItems: 'center', margin: '0 8px', fontSize: '9px', fontWeight: 550, color: 'var(--ink)' }}>
+                Page {currentPage} of {Math.max(1, Math.ceil(filteredOrders.length / itemsPerPage))}
+              </span>
+              <button
+                type="button"
+                className="pagination-button"
+                onClick={() => setCurrentPage((p) => Math.min(Math.ceil(filteredOrders.length / itemsPerPage), p + 1))}
+                disabled={currentPage >= Math.ceil(filteredOrders.length / itemsPerPage)}
+              >
+                Next
+              </button>
+              <button
+                type="button"
+                className="pagination-button"
+                onClick={() => setCurrentPage(Math.ceil(filteredOrders.length / itemsPerPage))}
+                disabled={currentPage >= Math.ceil(filteredOrders.length / itemsPerPage)}
+              >
+                Last
+              </button>
+            </div>
+          </div>
         )}
       </CardContent>
     </Card>
@@ -705,10 +815,10 @@ function AppShell() {
             />
 
             <section className="metric-grid" aria-label="Portfolio risk metrics">
-              <MetricCard label="Revenue at risk" value={dateRange.atRisk} delta={dateRange.atRiskDelta} detail="vs. previous period" type="risk" onClick={() => goToQueue('Revenue at risk')} />
-              <MetricCard label="Critical orders" value={dateRange.critical} delta={dateRange.criticalDelta} detail="require action before dispatch" type="critical" onClick={() => { setPriorityFilter('P0'); goToQueue('Critical orders') }} />
-              <MetricCard label="Return rate" value={dateRange.returnRate} delta={dateRange.returnDelta} detail="above category baseline" type="return" onClick={() => setActiveNav('Analytics')} />
-              <MetricCard label="Loss prevented" value={dateRange.prevented} delta={dateRange.preventedDelta} detail="validated this period" type="success" onClick={() => setActiveNav('Policies')} />
+              <MetricCard label="Revenue at risk" value={metrics.atRisk} delta={metrics.atRiskDelta} detail="vs. previous period" type="risk" onClick={() => goToQueue('Revenue at risk')} />
+              <MetricCard label="Critical orders" value={metrics.critical} delta={metrics.criticalDelta} detail="require action before dispatch" type="critical" onClick={() => { setPriorityFilter('P0'); goToQueue('Critical orders') }} />
+              <MetricCard label="Return rate" value={metrics.returnRate} delta={metrics.returnDelta} detail="above category baseline" type="return" onClick={() => setActiveNav('Analytics')} />
+              <MetricCard label="Loss prevented" value={metrics.prevented} delta={metrics.preventedDelta} detail="validated this period" type="success" onClick={() => setActiveNav('Policies')} />
             </section>
 
             <section className="dashboard-grid">
@@ -731,10 +841,10 @@ function AppShell() {
                     />
                   </CardHeader>
                   <div className="chart-summary">
-                    <strong>{dateRange.atRisk}</strong>
-                    <span><TrendDown size={16} weight="light" /> {dateRange.atRiskDelta} more than last period</span>
+                    <strong>{metrics.atRisk}</strong>
+                    <span><TrendDown size={16} weight="light" /> {metrics.atRiskDelta} more than last period</span>
                   </div>
-                  <div className="risk-chart" role="img" aria-label={`Loss at risk trend over ${trendWindow.toLowerCase()}, currently ${dateRange.atRisk}`}>
+                  <div className="risk-chart" role="img" aria-label={`Loss at risk trend over ${trendWindow.toLowerCase()}, currently ${metrics.atRisk}`}>
                     <div className="chart-gridline line-one"></div>
                     <div className="chart-gridline line-two"></div>
                     <div className="chart-gridline line-three"></div>
@@ -749,7 +859,7 @@ function AppShell() {
                       <polyline points={points} fill="none" stroke="#f4b369" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
                       <circle cx="656" cy="46" r="4.5" fill="#101928" stroke="#f4b369" strokeWidth="2.4" />
                     </svg>
-                    <div className="chart-annotation"><span>{dateRange.atRisk}</span><small>Current exposure</small></div>
+                    <div className="chart-annotation"><span>{metrics.atRisk}</span><small>Current exposure</small></div>
                   </div>
                   <div className="chart-axis" aria-hidden="true"><span>06 May</span><span>20 May</span><span>03 Jun</span><span>17 Jun</span><span>01 Jul</span><span>15 Jul</span></div>
                 </CardContent>
@@ -890,7 +1000,7 @@ function AppShell() {
               description="Category, geography, and driver analysis for the selected period. Select a region to cross-filter the queue."
             />
             <section className="metric-grid" aria-label="Analytics metrics">
-              <MetricCard label="Return rate" value={dateRange.returnRate} delta={dateRange.returnDelta} detail="above category baseline" type="return" />
+              <MetricCard label="Return rate" value={metrics.returnRate} delta={metrics.returnDelta} detail="above category baseline" type="return" />
               <MetricCard label="Top category" value="Kitchen" delta="18.2%" detail="return rate this period" type="risk" />
               <MetricCard label="Top region" value="Maharashtra" delta="INR 3.21L" detail="loss exposure" type="critical" onClick={() => { setSearchQuery('Maharashtra'); goToQueue('Maharashtra') }} />
               <MetricCard label="Exchange saves" value="41%" delta="6 pts" detail="of size-driven returns kept" type="success" />
