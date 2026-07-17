@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type ChangeEvent, type FormEvent } from 'react'
 import {
   ArrowUpRight,
   Bell,
@@ -12,9 +12,11 @@ import {
   FileArrowDown,
   Funnel,
   House,
+  List,
   ListChecks,
   MapPin,
   Package,
+  PencilSimple,
   ShieldCheck,
   Sparkle,
   TrendDown,
@@ -40,6 +42,7 @@ import {
 } from './components'
 import { Dropdown } from './components/ui/Dropdown'
 import { MetricCard, ActionStack } from './components/dashboard'
+import { OrderComposer } from './components/dashboard/OrderComposer'
 import { Login } from './pages/Login'
 import { CoPilot } from './pages/CoPilot'
 import { ConvixLandingPage } from './app/App'
@@ -57,7 +60,8 @@ import {
   type Notification,
   type Policy,
 } from './lib/data'
-import { chartPoints, downloadOrdersCSV, getGroqExplanation } from './lib/utils'
+import { chartPoints, downloadOrdersCSV, getGroqExplanation, parseOrdersCSV } from './lib/utils'
+import { createBlankDraft, draftFromOrder, loadStoredOrders, saveOrdersToStorage, scoreCustomDraft, type CustomOrderDraft } from './lib/orderScoring'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { auth } from './lib/firebase'
 
@@ -153,13 +157,17 @@ function AppShell() {
       setGroqKeyInput(key)
     }
   }, [])
-  const [orders, setOrders] = useState<Order[]>(seedOrders)
+  const [orders, setOrders] = useState<Order[]>(() => loadStoredOrders(seedOrders))
   const [notifications, setNotifications] = useState<Notification[]>(initialNotifications)
   const [policies, setPolicies] = useState<Policy[]>(initialPolicies)
 
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [showAlternatives, setShowAlternatives] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [composerOpen, setComposerOpen] = useState(false)
+  const [composerMode, setComposerMode] = useState<'create' | 'edit'>('create')
+  const [composerDraft, setComposerDraft] = useState<CustomOrderDraft>(() => createBlankDraft())
 
   const [dateRange, setDateRange] = useState(dateRanges[0])
   const [trendWindow, setTrendWindow] = useState('Last 12 weeks')
@@ -171,17 +179,24 @@ function AppShell() {
   const [sortMode, setSortMode] = useState<SortMode>('Expected loss')
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [importingOrders, setImportingOrders] = useState(false)
+  const importInputRef = useRef<HTMLInputElement>(null)
 
   const selectedOrder = orders.find((order) => order.id === selectedOrderId) ?? null
+  const composerPreview = useMemo(() => scoreCustomDraft(composerDraft), [composerDraft])
+
+  useEffect(() => {
+    saveOrdersToStorage(orders)
+  }, [orders])
 
   // Scroll lock while any overlay is open
   useEffect(() => {
-    const locked = isDrawerOpen || settingsOpen
+    const locked = isDrawerOpen || settingsOpen || mobileMenuOpen || composerOpen
     document.body.style.overflow = locked ? 'hidden' : ''
     return () => {
       document.body.style.overflow = ''
     }
-  }, [isDrawerOpen, settingsOpen])
+  }, [isDrawerOpen, settingsOpen, mobileMenuOpen, composerOpen])
 
   // Escape closes drawer / modal
   useEffect(() => {
@@ -189,6 +204,8 @@ function AppShell() {
       if (event.key !== 'Escape') return
       setIsDrawerOpen(false)
       setSettingsOpen(false)
+      setComposerOpen(false)
+      setMobileMenuOpen(false)
     }
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
@@ -223,6 +240,50 @@ function AppShell() {
     setIsDrawerOpen(true)
     setAiExplanation(null)
     setAiLoading(false)
+  }
+
+  const openComposer = (order?: Order) => {
+    if (order) {
+      setComposerMode('edit')
+      setComposerDraft(draftFromOrder(order))
+      setSelectedOrderId(order.id)
+    } else {
+      setComposerMode('create')
+      setComposerDraft(createBlankDraft())
+    }
+    setComposerOpen(true)
+  }
+
+  const duplicateOrder = (order: Order) => {
+    setComposerMode('create')
+    setComposerDraft({
+      ...draftFromOrder(order),
+      orderId: '',
+      customerName: `${order.customer} copy`,
+    })
+    setComposerOpen(true)
+    pushToast({ title: 'Order duplicated', body: 'Review the copied entry and save it as a new product/order.', tone: 'info' })
+  }
+
+  const updateComposerDraft = <K extends keyof CustomOrderDraft>(field: K, value: CustomOrderDraft[K]) => {
+    setComposerDraft((current) => ({ ...current, [field]: value }))
+  }
+
+  const saveComposerOrder = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const nextOrder = scoreCustomDraft(composerDraft)
+    setOrders((current) => [nextOrder, ...current.filter((order) => order.id !== nextOrder.id)])
+    setSelectedOrderId(nextOrder.id)
+    setIsDrawerOpen(true)
+    setComposerOpen(false)
+    setActiveNav('Orders')
+    pushToast({
+      title: composerMode === 'edit' ? 'Order updated locally' : 'Order saved locally',
+      body: composerMode === 'edit'
+        ? `${nextOrder.id} was re-scored and updated in your queue.`
+        : `${nextOrder.id} was scored and added to your queue.`,
+      tone: 'success',
+    })
   }
 
   const setOrderStatus = (id: string, status: OrderStatus) => {
@@ -289,6 +350,40 @@ function AppShell() {
     })
   }
 
+  const handleImportClick = () => {
+    importInputRef.current?.click()
+  }
+
+  const handleImportOrders = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file || importingOrders) return
+
+    setImportingOrders(true)
+    try {
+      const csvText = await file.text()
+      const importedOrders = parseOrdersCSV(csvText)
+      if (importedOrders.length === 0) {
+        pushToast({ title: 'No orders imported', body: 'The CSV did not contain any valid order rows.', tone: 'warning' })
+        return
+      }
+
+      setOrders((current) => {
+        const byId = new Map(current.map((order) => [order.id, order]))
+        importedOrders.forEach((order) => {
+          byId.set(order.id, order)
+        })
+        return Array.from(byId.values())
+      })
+      pushToast({ title: 'Orders imported', body: `${importedOrders.length} order entries were added to the local queue.`, tone: 'success' })
+    } catch (error) {
+      console.error('Import orders failed:', error)
+      pushToast({ title: 'Import failed', body: 'The file could not be read as a valid orders CSV.', tone: 'warning' })
+    } finally {
+      setImportingOrders(false)
+    }
+  }
+
   const handleLogout = async () => {
     try {
       await signOut(auth)
@@ -300,6 +395,8 @@ function AppShell() {
     setActiveNav('Overview')
     setIsDrawerOpen(false)
     setSettingsOpen(false)
+    setComposerOpen(false)
+    setMobileMenuOpen(false)
   }
 
   if (authLoading) {
@@ -493,13 +590,22 @@ function AppShell() {
   )
 
   return (
-    <Layout isCollapsed={isSidebarCollapsed}>
+    <Layout isCollapsed={isSidebarCollapsed} className={mobileMenuOpen ? 'is-mobile-menu-open' : ''}>
       <Sidebar
         activeNav={activeNav}
-        onNavClick={setActiveNav}
-        onSettings={() => setSettingsOpen(true)}
+        onNavClick={(label) => {
+          setActiveNav(label)
+          setMobileMenuOpen(false)
+        }}
+        onSettings={() => {
+          setSettingsOpen(true)
+          setMobileMenuOpen(false)
+        }}
         onSignOut={handleLogout}
-        onBackToLanding={() => navigateTo('landing')}
+        onBackToLanding={() => {
+          navigateTo('landing')
+          setMobileMenuOpen(false)
+        }}
         orderCount={orders.filter((o) => o.status === 'New' || o.status === 'Assigned').length + 85}
         isCollapsed={isSidebarCollapsed}
         onToggleCollapse={() => setIsSidebarCollapsed((prev) => !prev)}
@@ -518,6 +624,15 @@ function AppShell() {
 
       <Main>
         <div className="mobile-bar">
+          <button
+            className="icon-button mobile-menu-button"
+            type="button"
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileMenuOpen}
+            onClick={() => setMobileMenuOpen((open) => !open)}
+          >
+            <List size={19} weight="light" />
+          </button>
           <a className="brand" href="#overview">
             <span className="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
             <span>ReturnShield</span>
@@ -560,6 +675,12 @@ function AppShell() {
               description="Live risk signals across your order flow. Focus the team where a small intervention can prevent the largest loss."
               actions={
                 <div className="heading-actions">
+                  <Button variant="secondary" size="md" onClick={() => openComposer()} title="Add a locally scored order">
+                    Add order <span><ArrowUpRight size={16} weight="light" /></span>
+                  </Button>
+                  <Button variant="secondary" size="md" onClick={handleImportClick} title="Import a previously exported orders CSV">
+                    {importingOrders ? 'Importing…' : 'Import'} <span><ArrowUpRight size={16} weight="light" /></span>
+                  </Button>
                   <Dropdown
                     options={dateRanges.map((r) => r.label)}
                     value={dateRange.label}
@@ -746,6 +867,16 @@ function AppShell() {
               eyebrow={<><Package size={13} weight="light" /> Order intelligence</>}
               title="All scored orders."
               description="Every order carries its prediction, loss estimate, decision history, and current status."
+              actions={
+                <div className="heading-actions">
+                  <Button variant="secondary" size="md" onClick={() => openComposer()} title="Add a new user-entered order">
+                    Add order <span><ArrowUpRight size={16} weight="light" /></span>
+                  </Button>
+                  <Button variant="secondary" size="md" onClick={handleImportClick} title="Import a previously exported orders CSV">
+                    {importingOrders ? 'Importing…' : 'Import'} <span><ArrowUpRight size={16} weight="light" /></span>
+                  </Button>
+                </div>
+              }
             />
             {queueTable}
           </>
@@ -1023,6 +1154,22 @@ function AppShell() {
               <button
                 type="button"
                 className="drawer-chip"
+                onClick={() => duplicateOrder(selectedOrder)}
+                title="Create a new entry with the same product and order details"
+              >
+                <ArrowUpRight size={15} weight="light" /> Duplicate
+              </button>
+              <button
+                type="button"
+                className="drawer-chip"
+                onClick={() => openComposer(selectedOrder)}
+                title="Edit the product and order details for this entry"
+              >
+                <PencilSimple size={15} weight="light" /> Edit entry
+              </button>
+              <button
+                type="button"
+                className="drawer-chip"
                 onClick={() => assignOrder(selectedOrder)}
                 disabled={selectedOrder.status !== 'New'}
                 title="Move this order into your worklist"
@@ -1038,6 +1185,27 @@ function AppShell() {
           </aside>
         </div>
       )}
+
+      {mobileMenuOpen && <button className="mobile-menu-backdrop" type="button" aria-label="Close menu" onClick={() => setMobileMenuOpen(false)} />}
+
+      <OrderComposer
+        open={composerOpen}
+        mode={composerMode}
+        draft={composerDraft}
+        preview={composerPreview}
+        onClose={() => setComposerOpen(false)}
+        onChange={updateComposerDraft}
+        onSubmit={saveComposerOrder}
+        onReset={() => setComposerDraft(createBlankDraft())}
+      />
+
+      <input
+        ref={importInputRef}
+        type="file"
+        accept=".csv,text/csv"
+        style={{ display: 'none' }}
+        onChange={handleImportOrders}
+      />
 
       {/* Workspace settings modal */}
       {settingsOpen && (

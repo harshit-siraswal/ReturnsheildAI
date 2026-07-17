@@ -49,6 +49,86 @@ export function downloadOrdersCSV(orders: Order[], filenameLabel: string) {
   URL.revokeObjectURL(url)
 }
 
+function parseCSVLine(line: string) {
+  const values: string[] = []
+  let current = ''
+  let insideQuotes = false
+
+  for (let index = 0; index < line.length; index += 1) {
+    const character = line[index]
+    const nextCharacter = line[index + 1]
+
+    if (character === '"' && insideQuotes && nextCharacter === '"') {
+      current += '"'
+      index += 1
+      continue
+    }
+
+    if (character === '"') {
+      insideQuotes = !insideQuotes
+      continue
+    }
+
+    if (character === ',' && !insideQuotes) {
+      values.push(current)
+      current = ''
+      continue
+    }
+
+    current += character
+  }
+
+  values.push(current)
+  return values.map((value) => value.trim())
+}
+
+export function parseOrdersCSV(csvText: string): Order[] {
+  const lines = csvText
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+
+  if (lines.length < 2) return []
+
+  const headers = parseCSVLine(lines[0]).map((header) => header.toLowerCase())
+  const rows = lines.slice(1).map(parseCSVLine)
+
+  const columnIndex = (label: string) => headers.indexOf(label.toLowerCase())
+  const getCell = (row: string[], label: string) => row[columnIndex(label)] ?? ''
+
+  return rows
+    .map((row) => {
+      const orderId = getCell(row, 'Order')
+      if (!orderId) return null
+
+      const risk = Number(getCell(row, 'Risk score'))
+      const lossValue = Number(getCell(row, 'Potential loss (INR)'))
+      const slaHours = Number(getCell(row, 'SLA (hours)'))
+      const status = getCell(row, 'Status') as Order['status']
+      const priority = getCell(row, 'Priority') as Order['priority']
+      const payment = getCell(row, 'Payment') as Order['payment']
+
+      return {
+        id: orderId,
+        customer: getCell(row, 'Customer'),
+        product: getCell(row, 'Product'),
+        category: getCell(row, 'Category'),
+        risk: Number.isFinite(risk) ? risk : 0,
+        lossValue: Number.isFinite(lossValue) ? lossValue : 0,
+        loss: `INR ${(Number.isFinite(lossValue) ? lossValue : 0).toLocaleString('en-IN')}`,
+        driver: getCell(row, 'Top driver'),
+        action: getCell(row, 'Recommended action'),
+        alternatives: [] as string[],
+        priority: priority || 'P2',
+        status: status || 'New',
+        payment: payment || 'COD',
+        region: getCell(row, 'Region'),
+        slaHours: Number.isFinite(slaHours) ? slaHours : 24,
+      } satisfies Order
+    })
+    .filter((order): order is Order => !!order)
+}
+
 export async function fetchGroqAPI(messages: { role: string; content: string }[], apiKey: string): Promise<any> {
   const apiUrl = 'https://api.groq.com/openai/v1/chat/completions'
   const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
