@@ -104,7 +104,7 @@ export const DashboardPreview: React.FC = () => {
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 </div>
                 <div className="rs-preview-action-body">
-                  <div className="rs-preview-action-title">Verify 14 COD orders</div>
+                  <div className="rs-preview-action-title">Verify 14 Gift Card orders</div>
                   <div className="rs-preview-action-sub">Save an estimated INR 65,400</div>
                 </div>
                 <div className="rs-preview-action-arrow">↗</div>

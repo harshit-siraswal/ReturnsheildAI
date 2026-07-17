@@ -786,6 +786,7 @@
   grid-template-columns: 1fr;
   gap: 32px;
 }
+.showcase-grid--spaced { margin-top: 64px; }
 
 @media (min-width: 768px) {
   .showcase-grid {
@@ -1216,3 +1217,83 @@
   transition: color 200ms ease;
 }
 .rs-preview-view-all:hover { color: #9ca3af; }
+
+/* ─── Mobile responsive fixes (≤ 767px) ─────────────────────────
+   The hero is designed desktop-first: a fixed 100vh box with the dashboard
+   preview absolutely pinned to its bottom. On a phone the preview is taller
+   than the reserved space, so it overlaps the headline and gets clipped by
+   `overflow: hidden`. Below, the hero switches to natural flow on mobile so
+   the preview stacks under the headline instead of overlapping/clipping. */
+
+@media (max-width: 767px) {
+  /* Page frame */
+  .landing-page { padding: 8px; }
+
+  /* Hero: drop the fixed 100vh height and let content flow */
+  .landing-hero-container {
+    height: auto;
+    min-height: calc(100vh - 16px);
+    border-radius: 14px;
+  }
+  .landing-content-wrapper { height: auto; }
+
+  /* Hero text block: stop reserving the giant desktop bottom padding */
+  .landing-hero-content {
+    flex: 0 0 auto;
+    justify-content: flex-start;
+    padding: 30px 16px 36px;
+  }
+
+  /* Preview flows in normal document order, no longer absolutely pinned */
+  .landing-preview-abs {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    z-index: 5;
+    padding: 0 8px 14px;
+  }
+
+  /* Navbar pill: tighter on narrow viewports */
+  .landing-nav-wrapper { padding: 12px 8px 0; }
+  .landing-nav-pill { height: auto; min-height: 50px; padding: 8px 12px; }
+  .landing-right-cluster { gap: 10px; }
+  .landing-access-btn { padding: 6px 14px; font-size: 12px; gap: 6px; }
+  .landing-mobile-dropdown { left: 4px; right: 4px; }
+
+  /* Showcase section: kill the desktop-only 200px gap that cleared the hero */
+  .landing-showcase-section {
+    margin-top: 48px;
+    padding: 0 4px 56px;
+  }
+  .showcase-header { margin-bottom: 32px; }
+  .showcase-card { padding: 16px; gap: 16px; }
+  .showcase-grid { gap: 20px; }
+  .showcase-grid--spaced { margin-top: 36px; }
+
+  /* Feature row */
+  .landing-feature-row { gap: 14px; margin-top: 32px; }
+  .landing-feature-item { padding: 16px; }
+
+  /* Final CTA banner */
+  .landing-cta-banner { padding: 20px; gap: 16px; margin-top: 40px; border-radius: 18px; }
+  .banner-title { font-size: 18px; }
+
+  /* Dashboard preview: scale internal spacing down for small screens */
+  .rs-preview-shell { padding: 12px 12px 0; border-top-left-radius: 16px; border-top-right-radius: 16px; }
+  .rs-preview-topbar { flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .rs-preview-metrics { gap: 6px; margin-bottom: 8px; }
+  .rs-preview-metric-card { padding: 8px 10px; }
+  .rs-preview-panels { gap: 6px; }
+  .rs-preview-panel { padding: 10px; }
+  .rs-preview-chart-area { height: 56px; margin-top: 8px; }
+}
+
+/* Very small phones (≤ 380px) — keep the navbar legible */
+@media (max-width: 380px) {
+  .landing-logo span { font-size: 14px; }
+  .landing-access-btn { padding: 6px 10px; }
+  .rs-preview-metric-value { font-size: 13px; }
+  .rs-preview-metric-label { font-size: 8px; }
+}
+

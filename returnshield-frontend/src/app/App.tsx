@@ -170,7 +170,7 @@ export const ConvixLandingPage: React.FC<AppProps> = ({
         </div>
 
         {/* Showcase Cards */}
-        <div className="showcase-grid" style={{ marginTop: '64px' }}>
+        <div className="showcase-grid showcase-grid--spaced">
           <div className="showcase-card">
             <div className="showcase-card-meta">
               <span className="showcase-card-tag">Cohort Analysis</span>
